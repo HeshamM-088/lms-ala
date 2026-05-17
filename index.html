@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="ar" dir="rtl">
   <head>
     <meta charset="UTF-8" />
@@ -57,9 +57,29 @@
         --success: #22a06b;
         --warning: #d0972f;
       }
+      [data-theme="dark"] {
+        --page-bg: #071426;
+        --surface: #0f223c;
+        --surface-soft: #163152;
+        --surface-soft-2: #1b3e66;
+        --text-main: #eaf4ff;
+        --text-soft: #c0d9f4;
+        --text-muted: #9cb8d6;
+        --line: #28507d;
+        --primary: #ffb35f;
+        --secondary: #46d8bc;
+        --accent: #78c4ff;
+        --danger: #ff8880;
+        --success: #65d89f;
+        --warning: #ffd073;
+      }
       body {
         font-family: "Cairo", sans-serif;
-        background: radial-gradient(circle at 10% 0%, #e9f8ff 0%, #f6fbff 55%);
+        background: radial-gradient(
+          circle at 10% 0%,
+          var(--surface-soft) 0%,
+          var(--page-bg) 55%
+        );
         color: var(--text-main);
       }
       .glass {
@@ -269,34 +289,42 @@
           ],
           images: [
             {
-              url: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600",
+              url: "https://res.cloudinary.com/dj2ajx40n/image/upload/v1779061447/WPS_Photo_4_ic14bi.jpg",
               caption: "جبال خلقها الله",
             },
             {
-              url: "https://images.unsplash.com/photo-1437622368342-7a3d73a34c8f?w=600",
+              url: "https://res.cloudinary.com/dj2ajx40n/image/upload/v1779061447/WPS_Photo_1_ei48ig.jpg",
               caption: "بحار ومحيطات",
             },
             {
-              url: "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=600",
-              caption: "أشجار ونباتات",
+              url: "https://res.cloudinary.com/dj2ajx40n/image/upload/v1779061447/WPS_Photo_5_gu3vsu.jpg",
+              caption: "أسماك",
             },
             {
-              url: "https://images.unsplash.com/photo-1518837695005-2083093ee35b?w=600",
+              url: "https://res.cloudinary.com/dj2ajx40n/image/upload/v1779061447/WPS_Photo_2_zgktjo.jpg",
               caption: "سماء وغيوم",
+            },
+            {
+              url: "https://res.cloudinary.com/dj2ajx40n/image/upload/v1779061447/WPS_Photo_3_m6mkbr.jpg",
+              caption: "شلالات طبيعيه",
+            },
+            {
+              url: "https://res.cloudinary.com/dj2ajx40n/image/upload/v1779061448/WPS_Photo_7_cbomey.jpg",
+              caption: "صحراء و جمال",
+            },
+            {
+              url: "https://res.cloudinary.com/dj2ajx40n/image/upload/v1779061447/WPS_Photo_6_nolhol.jpg",
+              caption: "غابات و حيوانات",
             },
           ],
           activities: [
             {
-              title: "نشاط 1: تعرف على مخلوقات الله",
-              desc: "اكتب أسماء 5 مخلوقات خلقها الله في الطبيعة",
+              title: "نشاط 1",
+              desc: "https://res.cloudinary.com/dj2ajx40n/image/upload/v1779059360/WPS_Photo_1_nvwrvi.jpg",
             },
             {
-              title: "نشاط 2: آداب التعامل مع القرآن",
-              desc: "اذكر 3 آداب للتعامل مع القرآن الكريم",
-            },
-            {
-              title: "نشاط 3: نعم الله علينا",
-              desc: "عدد 3 نعم يومية تستحق الشكر",
+              title: "نشاط 2",
+              desc: "https://res.cloudinary.com/dj2ajx40n/image/upload/v1779059361/WPS_Photo_2_eljrxb.jpg",
             },
           ],
           gameUrl:
@@ -327,58 +355,52 @@
             "https://images.unsplash.com/photo-1561070791-2526d30994b5?w=400",
           description:
             "نتعلم في هذا الدرس أن الله تعالى خلق كل شيء من العدم، وهو المبدع العظيم.",
-          objectives: [
-            "أن يدرك المتعلم أن الله تعالى هو خالق كل شيء من العدم.",
-            "أن يميز المتعلم بين الخالق والمخلوق.",
-            "أن يتعرف المتعلم على قدرة الله في خلق الكون.",
-            "أن يُظهر المتعلم شكر نعم الله تعالى في حياته اليومية.",
-          ],
+          objectives: [],
           images: [
             {
-              url: "https://images.unsplash.com/photo-1462331940025-496dfbfc7564?w=600",
-              caption: "الكون والنجوم",
+              url: "",
+              caption: "",
             },
             {
-              url: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600",
-              caption: "الأرض من الفضاء",
+              url: "",
+              caption: "",
             },
             {
-              url: "https://images.unsplash.com/photo-1534996858221-380b92700493?w=600",
-              caption: "الشمس والقمر",
+              url: "",
+              caption: "",
             },
             {
-              url: "https://images.unsplash.com/photo-1502134249126-9f3755a50d78?w=600",
-              caption: "الحيوانات",
+              url: "",
+              caption: "",
             },
           ],
           activities: [
             {
-              title: "نشاط 1: من خلق هذا؟",
-              desc: "انظر إلى الصور واكتب من خلق كل مخلوق",
+              title: "",
+              desc: "",
             },
             {
-              title: "نشاط 2: قدرة الله العظيمة",
-              desc: "اكتب 3 أمثلة على قدرة الله في الكون",
+              title: "",
+              desc: "",
             },
             {
-              title: "نشاط 3: شكر النعم",
-              desc: "اكتب رسالة شكر لله على نعمة واحدة",
+              title: "",
+              desc: "",
             },
           ],
-          gameUrl:
-            "https://wordwall.net/ar/embed/6402f3718fc54a45b2cd67c2c102990d?themeId=1&templateId=2&fontStackId=0",
+          gameUrl: "",
           homework: [
             {
-              question: "السؤال الأول: من هو خالق كل شيء في الكون؟",
+              question: "",
               answer: "",
             },
             {
-              question: "السؤال الثاني: اكتب 3 مخلوقات خلقها الله تعالى.",
+              question: "",
               answer: "",
             },
           ],
           progress: 0,
-          duration: "18 دقيقة",
+          duration: "",
           type: "مدفوع",
           price: 149,
         },
@@ -392,52 +414,46 @@
             "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400",
           description:
             "نتعلم في هذا الدرس أن القرآن الكريم هو كلام الله المنزل على نبينا محمد ﷺ.",
-          objectives: [
-            "أن يتعرف المتعلم على القرآن الكريم بوصفه كلام الله.",
-            "أن يتعلم المتعلم آداب التعامل مع القرآن الكريم.",
-            "أن يحفظ المتعلم آيات من القرآن الكريم.",
-            "أن يطبق المتعلم ما تعلمه في حياته اليومية.",
-          ],
+          objectives: [],
           images: [
             {
-              url: "https://images.unsplash.com/photo-1589994965851-a8f479c573a9?w=600",
-              caption: "المصحف الشريف",
+              url: "",
+              caption: "",
             },
             {
-              url: "https://images.unsplash.com/photo-1542810634-71277f34f9a7?w=600",
-              caption: "تلاوة القرآن",
+              url: "",
+              caption: "",
             },
             {
-              url: "https://images.unsplash.com/photo-1574621100236-d25b64cfd647?w=600",
-              caption: "حفظ القرآن",
+              url: "",
+              caption: "",
             },
             {
-              url: "https://images.unsplash.com/photo-1519810755548-39de2172b040?w=600",
-              caption: "تدبر القرآن",
+              url: "",
+              caption: "",
             },
           ],
           activities: [
             {
-              title: "نشاط 1: آداب التلاوة",
-              desc: "اذكر 5 آداب للتعامل مع القرآن الكريم",
+              title: "",
+              desc: "",
             },
-            { title: "نشاط 2: حفظ آية", desc: "احفظ آية الكرسي مع فهم معناها" },
+            { title: "", desc: "" },
             {
-              title: "نشاط 3: تطبيق عملي",
-              desc: "طبق آداب التعامل مع القرآن في يومك",
+              title: "",
+              desc: "",
             },
           ],
-          gameUrl:
-            "https://wordwall.net/ar/embed/6402f3718fc54a45b2cd67c2c102990d?themeId=1&templateId=2&fontStackId=0",
+          gameUrl: "",
           homework: [
-            { question: "السؤال الأول: ما هو القرآن الكريم؟", answer: "" },
+            { question: "", answer: "" },
             {
-              question: "السؤال الثاني: اذكر 3 آداب للتعامل مع القرآن الكريم.",
+              question: "",
               answer: "",
             },
           ],
           progress: 0,
-          duration: "12 دقيقة",
+          duration: "",
           type: "مجاني",
           price: 0,
         },
@@ -446,7 +462,7 @@
           unit: "الوحدة الأولى",
           title: "الدرس الرابع: التعامل مع القرآن الكريم",
           instructor: "التعامل مع القران الكريم",
-          videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+          videoUrl: "https://www.youtube.com/embed/jd5SObruPNk",
           videoThumbnail:
             "https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=400",
           description:
@@ -459,34 +475,14 @@
           ],
           images: [
             {
-              url: "https://images.unsplash.com/photo-1589994965851-a8f479c573a9?w=600",
-              caption: "حمل المصحف",
-            },
-            {
-              url: "https://images.unsplash.com/photo-1542810634-71277f34f9a7?w=600",
-              caption: "التلاوة الجماعية",
-            },
-            {
-              url: "https://images.unsplash.com/photo-1574621100236-d25b64cfd647?w=600",
-              caption: "الوضوء قبل القراءة",
-            },
-            {
-              url: "https://images.unsplash.com/photo-1519810755548-39de2172b040?w=600",
-              caption: "التدبر والتفكر",
+              url: "https://res.cloudinary.com/dj2ajx40n/image/upload/v1779059793/WPS_Photo_4_ubo6xh.jpg",
+              caption: "اقرا قصتى",
             },
           ],
           activities: [
             {
-              title: "نشاط 1: آداب الحمل",
-              desc: "اكتب 3 آداب لحمل المصحف الشريف",
-            },
-            {
-              title: "نشاط 2: مواقف عملية",
-              desc: "ما تفعله إذا وجدت مصحفًا على الأرض؟",
-            },
-            {
-              title: "نشاط 3: التطبيق اليومي",
-              desc: "راقب نفسك لمدة يوم واحد في التعامل مع القرآن",
+              title: "نشاط 1",
+              desc: "https://res.cloudinary.com/dj2ajx40n/image/upload/v1779059361/WPS_Photo_3_iuedlm.jpg",
             },
           ],
           gameUrl:
@@ -601,13 +597,20 @@
 
       // ==================== COMPONENTS ====================
 
-      const Navbar = ({ user, setPage, logout, setLessonId }) => {
+      const Navbar = ({
+        user,
+        setPage,
+        logout,
+        setLessonId,
+        theme,
+        toggleTheme,
+      }) => {
         const [menuOpen, setMenuOpen] = useState(false);
         const [notifOpen, setNotifOpen] = useState(false);
 
         const goHome = () => {
           setLessonId(null);
-          setPage("home");
+          setPage("courses");
         };
 
         return (
@@ -633,54 +636,27 @@
                   >
                     الرئيسية
                   </button>
-                  <button
-                    onClick={() => {
-                      setLessonId(null);
-                      setPage("courses");
-                    }}
-                    className="text-gray-300 hover:text-white transition"
-                  >
-                    الدروس
-                  </button>
-                  <button
-                    onClick={() => {
-                      setLessonId(null);
-                      setPage("categories");
-                    }}
-                    className="text-gray-300 hover:text-white transition"
-                  >
-                    الأقسام
-                  </button>
-                  <button
-                    onClick={() => {
-                      setLessonId(null);
-                      setPage("pricing");
-                    }}
-                    className="text-gray-300 hover:text-white transition"
-                  >
-                    الاشتراكات
-                  </button>
-                  <button
-                    onClick={() => {
-                      setLessonId(null);
-                      setPage("about");
-                    }}
-                    className="text-gray-300 hover:text-white transition"
-                  >
-                    عن الموقع
-                  </button>
-                  <button
-                    onClick={() => {
-                      setLessonId(null);
-                      setPage("support");
-                    }}
-                    className="text-gray-300 hover:text-white transition"
-                  >
-                    الدعم
-                  </button>
                 </div>
 
                 <div className="flex items-center gap-4">
+                  <button
+                    onClick={toggleTheme}
+                    className="w-10 h-10 rounded-full border border-gray-700 bg-dark flex items-center justify-center text-gray-300 hover:text-white hover:bg-gray-800 transition"
+                    title={
+                      theme === "dark"
+                        ? "تفعيل الوضع الفاتح"
+                        : "تفعيل الوضع الداكن"
+                    }
+                    aria-label={
+                      theme === "dark"
+                        ? "تفعيل الوضع الفاتح"
+                        : "تفعيل الوضع الداكن"
+                    }
+                  >
+                    <i
+                      className={`fas ${theme === "dark" ? "fa-sun" : "fa-moon"}`}
+                    ></i>
+                  </button>
                   {user ? (
                     <>
                       <div className="relative">
@@ -1010,11 +986,13 @@
         const [showAnswers, setShowAnswers] = useState(false);
         const [currentImage, setCurrentImage] = useState(0);
 
-        if (!lesson)
+        if (!lesson || lesson.objectives.length == 0)
           return (
             <div className="pt-24 pb-20 text-center">
               <i className="fas fa-exclamation-circle text-4xl text-gray-600 mb-4"></i>
-              <p className="text-gray-500">الدرس غير موجود</p>
+              <p className="text-gray-400 text-lg">
+                جارى العمل على محتوى الدرس .. قريبا
+              </p>
               <button
                 onClick={() => setPage("courses")}
                 className="mt-4 px-6 py-2 bg-primary rounded-xl text-white"
@@ -1194,7 +1172,7 @@
                     <div className="relative">
                       <img
                         src={lesson.images[currentImage].url}
-                        className="w-full h-[320px] md:h-[450px] object-cover"
+                        className="w-full h-[320px] md:h-[450px] object-fit"
                         alt={lesson.images[currentImage].caption}
                       />
                       <button
@@ -1235,7 +1213,7 @@
               {activeTab === "activities" && (
                 <div className="space-y-6">
                   <h3 className="text-2xl font-bold">أنشطة تفاعلية</h3>
-                  <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  <div className="grid md:grid-cols-2 lg:grid-cols-2 gap-6">
                     {lesson.activities.map((act, i) => (
                       <div
                         key={i}
@@ -1245,9 +1223,17 @@
                           <i className="fas fa-tasks text-white text-xl"></i>
                         </div>
                         <h4 className="font-bold text-lg mb-2">{act.title}</h4>
-                        <p className="text-gray-400 text-sm mb-4">{act.desc}</p>
+                        <img
+                          className=""
+                          width="100%"
+                          src={act.desc}
+                          alt={act.title}
+                        />
+
                         <button className="w-full py-2 border border-primary/30 text-primary rounded-xl hover:bg-primary/10 transition">
-                          بدء النشاط
+                          <a href={act.desc} download>
+                            تحميل الصوره
+                          </a>
                         </button>
                       </div>
                     ))}
@@ -2595,9 +2581,12 @@
       // ==================== APP ====================
 
       const App = () => {
-        const [page, setPage] = useState("home");
+        const [page, setPage] = useState("courses");
         const [user, setUser] = useState(null);
         const [lessonId, setLessonId] = useState(null);
+        const [theme, setTheme] = useState(
+          () => localStorage.getItem("theme") || "light",
+        );
 
         const login = (userData) => {
           setUser(userData);
@@ -2606,8 +2595,44 @@
 
         const logout = () => {
           setUser(null);
-          setPage("home");
+          setPage("courses");
         };
+
+        useEffect(() => {
+          document.documentElement.setAttribute("data-theme", theme);
+          localStorage.setItem("theme", theme);
+        }, [theme]);
+
+        const toggleTheme = () => {
+          setTheme((prev) => (prev === "dark" ? "light" : "dark"));
+        };
+
+        const UnderConstructionPage = () => (
+          <div className="pt-24 pb-20">
+            <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+              <div className="bg-dark border border-gray-800 rounded-3xl p-10 md:p-14 text-center">
+                <div className="w-20 h-20 mx-auto rounded-2xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center mb-6">
+                  <i className="fas fa-tools text-white text-3xl"></i>
+                </div>
+                <h2 className="text-3xl md:text-4xl font-extrabold mb-4">
+                  جاري العمل...
+                </h2>
+                <p className="text-lg text-gray-400 mb-8">
+                  هذه الصفحة تحت الإنشاء حاليًا، وقريبًا ستكون متاحة بشكل كامل.
+                </p>
+                <button
+                  onClick={() => {
+                    setLessonId(null);
+                    setPage("courses");
+                  }}
+                  className="px-7 py-3 bg-gradient-to-r from-primary to-secondary rounded-xl text-white font-bold hover:shadow-lg transition"
+                >
+                  العودة إلى الدروس
+                </button>
+              </div>
+            </div>
+          </div>
+        );
 
         const renderPage = () => {
           switch (page) {
@@ -2713,6 +2738,8 @@
               setPage={setPage}
               logout={logout}
               setLessonId={setLessonId}
+              theme={theme}
+              toggleTheme={toggleTheme}
             />
             <main>{renderPage()}</main>
             <Footer setPage={setPage} />
