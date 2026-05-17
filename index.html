@@ -1,0 +1,2727 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>منصة التعلم - LMS</title>
+    <script
+      src="https://unpkg.com/react@18/umd/react.production.min.js"
+      crossorigin
+    ></script>
+    <script
+      src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"
+      crossorigin
+    ></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              cairo: ["Cairo", "sans-serif"],
+            },
+            colors: {
+              primary: "#ff8a3d",
+              secondary: "#2bb4a0",
+              accent: "#4aa8ff",
+              dark: "#ffffff",
+              darker: "#f6fbff",
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      :root {
+        --page-bg: #f6fbff;
+        --surface: #ffffff;
+        --surface-soft: #eef7ff;
+        --surface-soft-2: #e4f3ff;
+        --text-main: #17324d;
+        --text-soft: #3d5f7f;
+        --text-muted: #5f7a95;
+        --line: #cde5ff;
+        --primary: #ff8a3d;
+        --secondary: #2bb4a0;
+        --accent: #4aa8ff;
+        --danger: #e85f5c;
+        --success: #22a06b;
+        --warning: #d0972f;
+      }
+      body {
+        font-family: "Cairo", sans-serif;
+        background: radial-gradient(circle at 10% 0%, #e9f8ff 0%, #f6fbff 55%);
+        color: var(--text-main);
+      }
+      .glass {
+        background: rgba(255, 255, 255, 0.78);
+        backdrop-filter: blur(8px);
+        border: 1px solid rgba(74, 168, 255, 0.22);
+      }
+      .gradient-text {
+        background: linear-gradient(
+          135deg,
+          var(--primary),
+          var(--accent),
+          var(--secondary)
+        );
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+      .card-hover {
+        transition: all 0.3s ease;
+      }
+      .card-hover:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 40px rgba(74, 168, 255, 0.24);
+      }
+      @keyframes float {
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-10px);
+        }
+      }
+      .animate-float {
+        animation: float 3s ease-in-out infinite;
+      }
+      .scrollbar-hide::-webkit-scrollbar {
+        display: none;
+      }
+      .scrollbar-hide {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
+      .lesson-section {
+        scroll-margin-top: 100px;
+      }
+      .progress-ring {
+        transition: stroke-dashoffset 0.5s ease;
+      }
+      .tab-active {
+        border-bottom: 3px solid var(--primary);
+        color: var(--primary);
+      }
+      .video-container {
+        position: relative;
+        padding-bottom: 56.25%;
+        height: 0;
+        overflow: hidden;
+        border-radius: 1rem;
+      }
+      .video-container iframe {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border-radius: 1rem;
+      }
+
+      /* Global light + joyful palette overrides */
+      .bg-darker,
+      .bg-darker\/95 {
+        background-color: var(--page-bg) !important;
+      }
+      .bg-dark,
+      .bg-dark\/50 {
+        background-color: var(--surface) !important;
+      }
+      .bg-gray-800,
+      .bg-gray-800\/50 {
+        background-color: var(--surface-soft) !important;
+      }
+      .bg-gray-800\/30 {
+        background-color: rgba(74, 168, 255, 0.12) !important;
+      }
+      .bg-gray-700 {
+        background-color: var(--surface-soft-2) !important;
+      }
+      .bg-white\/5 {
+        background-color: rgba(255, 255, 255, 0.7) !important;
+      }
+      .bg-white\/20 {
+        background-color: rgba(255, 255, 255, 0.82) !important;
+      }
+      .bg-white\/30 {
+        background-color: rgba(255, 255, 255, 0.9) !important;
+      }
+
+      .text-white {
+        color: var(--text-main) !important;
+      }
+      .text-gray-300,
+      .text-gray-400 {
+        color: var(--text-soft) !important;
+      }
+      .text-gray-500,
+      .text-gray-600 {
+        color: var(--text-muted) !important;
+      }
+      .text-primary {
+        color: var(--primary) !important;
+      }
+      .text-secondary {
+        color: var(--secondary) !important;
+      }
+      .text-blue-400 {
+        color: #3479d6 !important;
+      }
+      .text-purple-400 {
+        color: #1f8da7 !important;
+      }
+      .text-green-400 {
+        color: var(--success) !important;
+      }
+      .text-yellow-400 {
+        color: var(--warning) !important;
+      }
+      .text-red-400 {
+        color: var(--danger) !important;
+      }
+
+      .border-gray-600,
+      .border-gray-700,
+      .border-gray-800 {
+        border-color: var(--line) !important;
+      }
+      .border-white\/10 {
+        border-color: rgba(74, 168, 255, 0.22) !important;
+      }
+      .border-primary,
+      .border-primary\/30 {
+        border-color: rgba(255, 138, 61, 0.45) !important;
+      }
+      .border-green-500\/30 {
+        border-color: rgba(34, 160, 107, 0.35) !important;
+      }
+
+      .bg-primary,
+      .bg-primary\/10,
+      .bg-primary\/20 {
+        background-color: rgba(255, 138, 61, 0.18) !important;
+      }
+      .bg-secondary\/10,
+      .bg-secondary\/20 {
+        background-color: rgba(43, 180, 160, 0.18) !important;
+      }
+      .bg-blue-500\/10,
+      .bg-blue-500\/20 {
+        background-color: rgba(74, 168, 255, 0.18) !important;
+      }
+      .bg-purple-500\/20 {
+        background-color: rgba(31, 141, 167, 0.18) !important;
+      }
+      .bg-green-500\/10,
+      .bg-green-500\/20 {
+        background-color: rgba(34, 160, 107, 0.17) !important;
+      }
+      .bg-yellow-500\/20 {
+        background-color: rgba(208, 151, 47, 0.2) !important;
+      }
+      .bg-red-500,
+      .bg-red-500\/10,
+      .bg-red-500\/20 {
+        background-color: rgba(232, 95, 92, 0.18) !important;
+      }
+
+      .tab-active {
+        border-bottom: 3px solid var(--primary);
+        color: var(--primary);
+      }
+    </style>
+    <base target="_blank" />
+  </head>
+  <body class="bg-darker text-white font-cairo">
+    <div id="root"></div>
+    <script type="text/babel">
+      const { useState, useEffect, useRef } = React;
+
+      // ==================== LESSONS DATA ====================
+      const lessonsData = [
+        {
+          id: 1,
+          unit: "الوحدة الأولى",
+          title: "الدرس الأول: الله ربى وخالقى",
+          instructor: "الله ربى و خالقى",
+          videoUrl: "https://www.youtube.com/embed/ZCciaLGpGfc",
+          videoThumbnail:
+            "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=400",
+          description:
+            "نتعلم في هذا الدرس أن الله تعالى هو خالق كل شيء في الكون، وهو الرازق المدبر لجميع المخلوقات.",
+          objectives: [
+            "أن يوضح المتعلم أن الله تعالى هو الخالق الرازق المدبر لكل شيء في الكون.",
+            "أن يميز المتعلم بين المخلوقات التي خلقها الله تعالى من خلال الأمثلة والصور والأنشطة التعليمية.",
+            "أن يتعرف المتعلم على القرآن الكريم بوصفه كلام الله تعالى المنزل على نبينا محمد ﷺ.",
+            "أن يطبق المتعلم آداب التعامل مع القرآن الكريم في المواقف التعليمية والحياتية اليومية.",
+            "أن يُظهر المتعلم سلوكًا يعكس تعظيم نعم الله تعالى واحترام القرآن الكريم أثناء الأنشطة الصفية والتفاعلية.",
+          ],
+          images: [
+            {
+              url: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600",
+              caption: "جبال خلقها الله",
+            },
+            {
+              url: "https://images.unsplash.com/photo-1437622368342-7a3d73a34c8f?w=600",
+              caption: "بحار ومحيطات",
+            },
+            {
+              url: "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=600",
+              caption: "أشجار ونباتات",
+            },
+            {
+              url: "https://images.unsplash.com/photo-1518837695005-2083093ee35b?w=600",
+              caption: "سماء وغيوم",
+            },
+          ],
+          activities: [
+            {
+              title: "نشاط 1: تعرف على مخلوقات الله",
+              desc: "اكتب أسماء 5 مخلوقات خلقها الله في الطبيعة",
+            },
+            {
+              title: "نشاط 2: آداب التعامل مع القرآن",
+              desc: "اذكر 3 آداب للتعامل مع القرآن الكريم",
+            },
+            {
+              title: "نشاط 3: نعم الله علينا",
+              desc: "عدد 3 نعم يومية تستحق الشكر",
+            },
+          ],
+          gameUrl:
+            "https://wordwall.net/ar/embed/6402f3718fc54a45b2cd67c2c102990d?themeId=1&templateId=2&fontStackId=0",
+          homework: [
+            {
+              question:
+                "السؤال الأول: أكمل العبارة: الذي خلق المخلوقات، والمستحق للعبادة وحده هو .............................................",
+              answer: "",
+            },
+            {
+              question: "السؤال الثاني: من الذي يرزقني ويرزق جميع الناس؟",
+              answer: "",
+            },
+          ],
+          progress: 0,
+          duration: "15 دقيقة",
+          type: "مدفوع",
+          price: 199,
+        },
+        {
+          id: 2,
+          unit: "الوحدة الأولى",
+          title: "الدرس الثانى: الله خالق كل شئ",
+          instructor: "الله خالق كل شئ",
+          videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+          videoThumbnail:
+            "https://images.unsplash.com/photo-1561070791-2526d30994b5?w=400",
+          description:
+            "نتعلم في هذا الدرس أن الله تعالى خلق كل شيء من العدم، وهو المبدع العظيم.",
+          objectives: [
+            "أن يدرك المتعلم أن الله تعالى هو خالق كل شيء من العدم.",
+            "أن يميز المتعلم بين الخالق والمخلوق.",
+            "أن يتعرف المتعلم على قدرة الله في خلق الكون.",
+            "أن يُظهر المتعلم شكر نعم الله تعالى في حياته اليومية.",
+          ],
+          images: [
+            {
+              url: "https://images.unsplash.com/photo-1462331940025-496dfbfc7564?w=600",
+              caption: "الكون والنجوم",
+            },
+            {
+              url: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600",
+              caption: "الأرض من الفضاء",
+            },
+            {
+              url: "https://images.unsplash.com/photo-1534996858221-380b92700493?w=600",
+              caption: "الشمس والقمر",
+            },
+            {
+              url: "https://images.unsplash.com/photo-1502134249126-9f3755a50d78?w=600",
+              caption: "الحيوانات",
+            },
+          ],
+          activities: [
+            {
+              title: "نشاط 1: من خلق هذا؟",
+              desc: "انظر إلى الصور واكتب من خلق كل مخلوق",
+            },
+            {
+              title: "نشاط 2: قدرة الله العظيمة",
+              desc: "اكتب 3 أمثلة على قدرة الله في الكون",
+            },
+            {
+              title: "نشاط 3: شكر النعم",
+              desc: "اكتب رسالة شكر لله على نعمة واحدة",
+            },
+          ],
+          gameUrl:
+            "https://wordwall.net/ar/embed/6402f3718fc54a45b2cd67c2c102990d?themeId=1&templateId=2&fontStackId=0",
+          homework: [
+            {
+              question: "السؤال الأول: من هو خالق كل شيء في الكون؟",
+              answer: "",
+            },
+            {
+              question: "السؤال الثاني: اكتب 3 مخلوقات خلقها الله تعالى.",
+              answer: "",
+            },
+          ],
+          progress: 0,
+          duration: "18 دقيقة",
+          type: "مدفوع",
+          price: 149,
+        },
+        {
+          id: 3,
+          unit: "الوحدة الأولى",
+          title: "الدرس الثالث: القرآن الكريم",
+          instructor: "القران الكريم",
+          videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+          videoThumbnail:
+            "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400",
+          description:
+            "نتعلم في هذا الدرس أن القرآن الكريم هو كلام الله المنزل على نبينا محمد ﷺ.",
+          objectives: [
+            "أن يتعرف المتعلم على القرآن الكريم بوصفه كلام الله.",
+            "أن يتعلم المتعلم آداب التعامل مع القرآن الكريم.",
+            "أن يحفظ المتعلم آيات من القرآن الكريم.",
+            "أن يطبق المتعلم ما تعلمه في حياته اليومية.",
+          ],
+          images: [
+            {
+              url: "https://images.unsplash.com/photo-1589994965851-a8f479c573a9?w=600",
+              caption: "المصحف الشريف",
+            },
+            {
+              url: "https://images.unsplash.com/photo-1542810634-71277f34f9a7?w=600",
+              caption: "تلاوة القرآن",
+            },
+            {
+              url: "https://images.unsplash.com/photo-1574621100236-d25b64cfd647?w=600",
+              caption: "حفظ القرآن",
+            },
+            {
+              url: "https://images.unsplash.com/photo-1519810755548-39de2172b040?w=600",
+              caption: "تدبر القرآن",
+            },
+          ],
+          activities: [
+            {
+              title: "نشاط 1: آداب التلاوة",
+              desc: "اذكر 5 آداب للتعامل مع القرآن الكريم",
+            },
+            { title: "نشاط 2: حفظ آية", desc: "احفظ آية الكرسي مع فهم معناها" },
+            {
+              title: "نشاط 3: تطبيق عملي",
+              desc: "طبق آداب التعامل مع القرآن في يومك",
+            },
+          ],
+          gameUrl:
+            "https://wordwall.net/ar/embed/6402f3718fc54a45b2cd67c2c102990d?themeId=1&templateId=2&fontStackId=0",
+          homework: [
+            { question: "السؤال الأول: ما هو القرآن الكريم؟", answer: "" },
+            {
+              question: "السؤال الثاني: اذكر 3 آداب للتعامل مع القرآن الكريم.",
+              answer: "",
+            },
+          ],
+          progress: 0,
+          duration: "12 دقيقة",
+          type: "مجاني",
+          price: 0,
+        },
+        {
+          id: 4,
+          unit: "الوحدة الأولى",
+          title: "الدرس الرابع: التعامل مع القرآن الكريم",
+          instructor: "التعامل مع القران الكريم",
+          videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+          videoThumbnail:
+            "https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=400",
+          description:
+            "نتعلم في هذا الدرس آداب التعامل مع القرآن الكريم في الحياة اليومية.",
+          objectives: [
+            "أن يتعلم المتعلم آداب حمل المصحف.",
+            "أن يتعلم المتعلم آداب التلاوة والاستماع.",
+            "أن يطبق المتعلم هذه الآداب في المسجد والبيت والمدرسة.",
+            "أن يُظهر المتعلم احترامًا عميقًا للقرآن الكريم.",
+          ],
+          images: [
+            {
+              url: "https://images.unsplash.com/photo-1589994965851-a8f479c573a9?w=600",
+              caption: "حمل المصحف",
+            },
+            {
+              url: "https://images.unsplash.com/photo-1542810634-71277f34f9a7?w=600",
+              caption: "التلاوة الجماعية",
+            },
+            {
+              url: "https://images.unsplash.com/photo-1574621100236-d25b64cfd647?w=600",
+              caption: "الوضوء قبل القراءة",
+            },
+            {
+              url: "https://images.unsplash.com/photo-1519810755548-39de2172b040?w=600",
+              caption: "التدبر والتفكر",
+            },
+          ],
+          activities: [
+            {
+              title: "نشاط 1: آداب الحمل",
+              desc: "اكتب 3 آداب لحمل المصحف الشريف",
+            },
+            {
+              title: "نشاط 2: مواقف عملية",
+              desc: "ما تفعله إذا وجدت مصحفًا على الأرض؟",
+            },
+            {
+              title: "نشاط 3: التطبيق اليومي",
+              desc: "راقب نفسك لمدة يوم واحد في التعامل مع القرآن",
+            },
+          ],
+          gameUrl:
+            "https://wordwall.net/ar/embed/6402f3718fc54a45b2cd67c2c102990d?themeId=1&templateId=2&fontStackId=0",
+          homework: [
+            {
+              question: "السؤال الأول: اذكر 3 آداب لحمل المصحف الشريف.",
+              answer: "",
+            },
+            {
+              question: "السؤال الثاني: كيف تتعامل مع القرآن الكريم في المسجد؟",
+              answer: "",
+            },
+          ],
+          progress: 0,
+          duration: "30 دقيقة",
+          type: "مدفوع",
+          price: 99,
+        },
+      ];
+
+      const categories = [
+        {
+          name: "البرمجة",
+          icon: "fa-code",
+          color: "from-blue-500 to-cyan-500",
+          count: 45,
+        },
+        {
+          name: "التصميم",
+          icon: "fa-palette",
+          color: "from-purple-500 to-pink-500",
+          count: 32,
+        },
+        {
+          name: "التسويق",
+          icon: "fa-bullhorn",
+          color: "from-orange-500 to-red-500",
+          count: 28,
+        },
+        {
+          name: "اللغات",
+          icon: "fa-language",
+          color: "from-green-500 to-emerald-500",
+          count: 20,
+        },
+        {
+          name: "الإدارة",
+          icon: "fa-briefcase",
+          color: "from-yellow-500 to-orange-500",
+          count: 15,
+        },
+        {
+          name: "المالية",
+          icon: "fa-chart-line",
+          color: "from-indigo-500 to-purple-500",
+          count: 12,
+        },
+      ];
+
+      const plans = [
+        {
+          name: "المجاني",
+          price: "0",
+          features: ["5 دورات مجانية", "شهادة إتمام", "دعم المجتمع"],
+          popular: false,
+        },
+        {
+          name: "الأساسي",
+          price: "49",
+          features: [
+            "جميع الدورات",
+            "شهادة معتمدة",
+            "دعم فني",
+            "تحميل المحتوى",
+          ],
+          popular: true,
+        },
+        {
+          name: "الاحترافي",
+          price: "99",
+          features: [
+            "جميع المميزات",
+            "جلسات خاصة",
+            "مشاريع عملية",
+            "توظيف مضمون",
+          ],
+          popular: false,
+        },
+      ];
+
+      const notifications = [
+        {
+          id: 1,
+          text: "تم إضافة درس جديد: الله خالق كل شئ",
+          time: "منذ 5 دقائق",
+          type: "course",
+        },
+        {
+          id: 2,
+          text: "تهانينا! أكملت 50% من درس الله ربى وخالقى",
+          time: "منذ ساعة",
+          type: "progress",
+        },
+        {
+          id: 3,
+          text: "رسالة جديدة من المعلم",
+          time: "منذ 3 ساعات",
+          type: "message",
+        },
+      ];
+
+      // ==================== COMPONENTS ====================
+
+      const Navbar = ({ user, setPage, logout, setLessonId }) => {
+        const [menuOpen, setMenuOpen] = useState(false);
+        const [notifOpen, setNotifOpen] = useState(false);
+
+        const goHome = () => {
+          setLessonId(null);
+          setPage("home");
+        };
+
+        return (
+          <nav className="fixed top-0 w-full z-50 glass">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <div className="flex items-center justify-between h-16">
+                <div
+                  className="flex items-center gap-2 cursor-pointer"
+                  onClick={goHome}
+                >
+                  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center">
+                    <i className="fas fa-graduation-cap text-white text-lg"></i>
+                  </div>
+                  <span className="text-xl font-bold gradient-text">
+                    منصة التعلم
+                  </span>
+                </div>
+
+                <div className="hidden md:flex items-center gap-8">
+                  <button
+                    onClick={goHome}
+                    className="text-gray-300 hover:text-white transition"
+                  >
+                    الرئيسية
+                  </button>
+                  <button
+                    onClick={() => {
+                      setLessonId(null);
+                      setPage("courses");
+                    }}
+                    className="text-gray-300 hover:text-white transition"
+                  >
+                    الدروس
+                  </button>
+                  <button
+                    onClick={() => {
+                      setLessonId(null);
+                      setPage("categories");
+                    }}
+                    className="text-gray-300 hover:text-white transition"
+                  >
+                    الأقسام
+                  </button>
+                  <button
+                    onClick={() => {
+                      setLessonId(null);
+                      setPage("pricing");
+                    }}
+                    className="text-gray-300 hover:text-white transition"
+                  >
+                    الاشتراكات
+                  </button>
+                  <button
+                    onClick={() => {
+                      setLessonId(null);
+                      setPage("about");
+                    }}
+                    className="text-gray-300 hover:text-white transition"
+                  >
+                    عن الموقع
+                  </button>
+                  <button
+                    onClick={() => {
+                      setLessonId(null);
+                      setPage("support");
+                    }}
+                    className="text-gray-300 hover:text-white transition"
+                  >
+                    الدعم
+                  </button>
+                </div>
+
+                <div className="flex items-center gap-4">
+                  {user ? (
+                    <>
+                      <div className="relative">
+                        <button
+                          onClick={() => setNotifOpen(!notifOpen)}
+                          className="relative p-2 text-gray-300 hover:text-white"
+                        >
+                          <i className="fas fa-bell text-lg"></i>
+                          <span className="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full"></span>
+                        </button>
+                        {notifOpen && (
+                          <div className="absolute left-0 mt-2 w-80 bg-dark border border-gray-700 rounded-xl shadow-2xl p-4">
+                            <h3 className="font-bold mb-3">الإشعارات</h3>
+                            {notifications.map((n) => (
+                              <div
+                                key={n.id}
+                                className="flex items-start gap-3 p-2 hover:bg-gray-800 rounded-lg cursor-pointer"
+                              >
+                                <div
+                                  className={`w-8 h-8 rounded-full flex items-center justify-center ${n.type === "course" ? "bg-blue-500/20 text-blue-400" : n.type === "progress" ? "bg-green-500/20 text-green-400" : "bg-purple-500/20 text-purple-400"}`}
+                                >
+                                  <i
+                                    className={`fas ${n.type === "course" ? "fa-book" : n.type === "progress" ? "fa-chart-line" : "fa-envelope"} text-sm`}
+                                  ></i>
+                                </div>
+                                <div>
+                                  <p className="text-sm">{n.text}</p>
+                                  <p className="text-xs text-gray-500">
+                                    {n.time}
+                                  </p>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                      <div className="relative group">
+                        <button className="flex items-center gap-2">
+                          <img
+                            src={`https://ui-avatars.com/api/?name=${user.name}&background=6366f1&color=fff`}
+                            className="w-9 h-9 rounded-full"
+                          />
+                          <span className="hidden sm:block text-sm">
+                            {user.name}
+                          </span>
+                        </button>
+                        <div className="absolute left-0 mt-2 w-48 bg-dark border border-gray-700 rounded-xl shadow-2xl opacity-0 group-hover:opacity-100 invisible group-hover:visible transition-all p-2">
+                          <button
+                            onClick={() => {
+                              setLessonId(null);
+                              setPage("dashboard");
+                            }}
+                            className="w-full text-right px-4 py-2 hover:bg-gray-800 rounded-lg flex items-center gap-2"
+                          >
+                            <i className="fas fa-user text-primary"></i> لوحة
+                            التحكم
+                          </button>
+                          <button
+                            onClick={() => {
+                              setLessonId(null);
+                              setPage("admin");
+                            }}
+                            className="w-full text-right px-4 py-2 hover:bg-gray-800 rounded-lg flex items-center gap-2"
+                          >
+                            <i className="fas fa-cog text-secondary"></i>{" "}
+                            الإعدادات
+                          </button>
+                          <hr className="border-gray-700 my-2" />
+                          <button
+                            onClick={logout}
+                            className="w-full text-right px-4 py-2 hover:bg-red-500/10 text-red-400 rounded-lg flex items-center gap-2"
+                          >
+                            <i className="fas fa-sign-out-alt"></i> تسجيل خروج
+                          </button>
+                        </div>
+                      </div>
+                    </>
+                  ) : (
+                    <button
+                      onClick={() => {
+                        setLessonId(null);
+                        setPage("login");
+                      }}
+                      className="px-6 py-2 bg-gradient-to-r from-primary to-secondary rounded-full text-white font-semibold hover:shadow-lg hover:shadow-primary/30 transition"
+                    >
+                      تسجيل الدخول
+                    </button>
+                  )}
+                  <button
+                    onClick={() => setMenuOpen(!menuOpen)}
+                    className="md:hidden text-gray-300"
+                  >
+                    <i className="fas fa-bars text-xl"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+            {menuOpen && (
+              <div className="md:hidden bg-dark border-t border-gray-800">
+                <div className="px-4 py-3 space-y-2">
+                  {[
+                    "home",
+                    "courses",
+                    "categories",
+                    "pricing",
+                    "about",
+                    "support",
+                  ].map((p) => (
+                    <button
+                      key={p}
+                      onClick={() => {
+                        setLessonId(null);
+                        setPage(p);
+                        setMenuOpen(false);
+                      }}
+                      className="block w-full text-right py-2 text-gray-300 hover:text-white"
+                    >
+                      {p === "home"
+                        ? "الرئيسية"
+                        : p === "courses"
+                          ? "الدروس"
+                          : p === "categories"
+                            ? "الأقسام"
+                            : p === "pricing"
+                              ? "الاشتراكات"
+                              : p === "about"
+                                ? "عن الموقع"
+                                : "الدعم"}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+          </nav>
+        );
+      };
+
+      const Hero = ({ setPage }) => (
+        <section className="relative min-h-screen flex items-center pt-16 overflow-hidden">
+          <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=1920')] bg-cover bg-center opacity-10"></div>
+          <div className="absolute inset-0 bg-gradient-to-b from-darker/50 via-darker/80 to-darker"></div>
+          <div className="absolute top-20 right-10 w-72 h-72 bg-primary/20 rounded-full blur-3xl animate-float"></div>
+          <div
+            className="absolute bottom-20 left-10 w-96 h-96 bg-secondary/20 rounded-full blur-3xl animate-float"
+            style={{ animationDelay: "1.5s" }}
+          ></div>
+
+          <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+            <div className="grid lg:grid-cols-2 gap-12 items-center">
+              <div>
+                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/30 text-primary text-sm mb-6">
+                  <i className="fas fa-sparkles"></i>
+                  <span>أكثر من 10,000 طالب يتعلمون معنا</span>
+                </div>
+                <h1 className="text-4xl md:text-6xl font-bold leading-tight mb-6">
+                  تعلم <span className="gradient-text">المستقبل</span>
+                  <br />
+                  يبدأ من هنا
+                </h1>
+                <p className="text-gray-400 text-lg mb-8 leading-relaxed">
+                  منصة تعليمية متكاملة توفر لك دروس احترافية في الدراسات
+                  الإسلامية والعلوم المختلفة. تعلم بوتيرة خاصة بك مع أفضل
+                  المعلمين.
+                </p>
+                <div className="flex flex-wrap gap-4">
+                  <button
+                    onClick={() => setPage("courses")}
+                    className="px-8 py-4 bg-gradient-to-r from-primary to-secondary rounded-xl text-white font-bold text-lg hover:shadow-xl hover:shadow-primary/30 transition transform hover:scale-105"
+                  >
+                    ابدأ التعلم الآن <i className="fas fa-arrow-left mr-2"></i>
+                  </button>
+                  <button
+                    onClick={() => setPage("about")}
+                    className="px-8 py-4 border border-gray-600 rounded-xl text-white font-bold hover:bg-white/5 transition"
+                  >
+                    تعرف علينا
+                  </button>
+                </div>
+                <div className="flex items-center gap-8 mt-12">
+                  <div>
+                    <div className="text-3xl font-bold gradient-text">500+</div>
+                    <div className="text-gray-500 text-sm">درس تعليمي</div>
+                  </div>
+                  <div className="w-px h-12 bg-gray-700"></div>
+                  <div>
+                    <div className="text-3xl font-bold gradient-text">10K+</div>
+                    <div className="text-gray-500 text-sm">طالب نشط</div>
+                  </div>
+                  <div className="w-px h-12 bg-gray-700"></div>
+                  <div>
+                    <div className="text-3xl font-bold gradient-text">50+</div>
+                    <div className="text-gray-500 text-sm">معلم خبير</div>
+                  </div>
+                </div>
+              </div>
+              <div className="relative hidden lg:block">
+                <div className="relative">
+                  <div className="absolute -inset-4 bg-gradient-to-r from-primary/30 to-secondary/30 rounded-3xl blur-2xl"></div>
+                  <img
+                    src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=600"
+                    className="relative rounded-3xl shadow-2xl border border-white/10"
+                  />
+                  <div className="absolute -bottom-6 -right-6 bg-dark border border-gray-700 rounded-2xl p-4 shadow-xl">
+                    <div className="flex items-center gap-3">
+                      <div className="w-12 h-12 rounded-full bg-green-500/20 flex items-center justify-center">
+                        <i className="fas fa-check text-green-400"></i>
+                      </div>
+                      <div>
+                        <div className="font-bold">شهادة معتمدة</div>
+                        <div className="text-sm text-gray-500">
+                          مع كل درس تكمله
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="absolute -top-6 -left-6 bg-dark border border-gray-700 rounded-2xl p-4 shadow-xl">
+                    <div className="flex items-center gap-3">
+                      <div className="w-12 h-12 rounded-full bg-yellow-500/20 flex items-center justify-center">
+                        <i className="fas fa-star text-yellow-400"></i>
+                      </div>
+                      <div>
+                        <div className="font-bold">4.9 تقييم</div>
+                        <div className="text-sm text-gray-500">
+                          من آلاف الطلاب
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      );
+
+      const CourseCard = ({ course, onClick }) => (
+        <div
+          onClick={onClick}
+          className="card-hover bg-dark border border-gray-800 rounded-2xl overflow-hidden group cursor-pointer"
+        >
+          <div className="relative">
+            <img
+              src={course.videoThumbnail}
+              className="w-full h-48 object-cover"
+            />
+            <div className="absolute top-3 right-3">
+              <span
+                className={`px-3 py-1 rounded-full text-xs font-bold ${course.type === "مجاني" ? "bg-green-500/20 text-green-400" : "bg-primary/20 text-primary"}`}
+              >
+                {course.type}
+              </span>
+            </div>
+            <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
+              <button className="w-14 h-14 rounded-full bg-white/20 backdrop-blur flex items-center justify-center hover:bg-white/30 transition">
+                <i className="fas fa-play text-white text-xl"></i>
+              </button>
+            </div>
+          </div>
+          <div className="p-5">
+            <div className="text-xs text-gray-500 mb-2">{course.unit}</div>
+            <h3 className="font-bold text-lg mb-2 group-hover:text-primary transition">
+              {course.title}
+            </h3>
+            <div className="flex items-center gap-2 mb-3">
+              <span className="text-sm text-gray-400">{course.instructor}</span>
+            </div>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-1">
+                <i className="fas fa-clock text-gray-500 text-sm"></i>
+                <span className="text-sm text-gray-500">{course.duration}</span>
+              </div>
+              <div className="font-bold text-lg">
+                {course.price === 0 ? (
+                  <span className="text-green-400">مجاني</span>
+                ) : (
+                  <span className="gradient-text">${course.price}</span>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+
+      const LatestCourses = ({ setPage, setLessonId }) => {
+        const latest = lessonsData.slice(0, 4);
+        return (
+          <section className="py-20">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <div className="flex items-center justify-between mb-12">
+                <div>
+                  <h2 className="text-3xl font-bold mb-2">أحدث الدروس</h2>
+                  <p className="text-gray-400">
+                    اكتشف أحدث الدروس المضافة إلى المنصة
+                  </p>
+                </div>
+                <button
+                  onClick={() => setPage("courses")}
+                  className="text-primary hover:text-secondary transition flex items-center gap-2"
+                >
+                  عرض الكل <i className="fas fa-arrow-left"></i>
+                </button>
+              </div>
+              <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                {latest.map((course) => (
+                  <CourseCard
+                    key={course.id}
+                    course={course}
+                    onClick={() => {
+                      setLessonId(course.id);
+                      setPage("lesson");
+                    }}
+                  />
+                ))}
+              </div>
+            </div>
+          </section>
+        );
+      };
+
+      // ==================== LESSON DETAIL PAGE ====================
+
+      const LessonDetail = ({ lessonId, setPage }) => {
+        const lesson = lessonsData.find((l) => l.id === lessonId);
+        const [activeTab, setActiveTab] = useState("video");
+        const [progress, setProgress] = useState(lesson?.progress || 0);
+        const [homeworkAnswers, setHomeworkAnswers] = useState({});
+        const [showAnswers, setShowAnswers] = useState(false);
+        const [currentImage, setCurrentImage] = useState(0);
+
+        if (!lesson)
+          return (
+            <div className="pt-24 pb-20 text-center">
+              <i className="fas fa-exclamation-circle text-4xl text-gray-600 mb-4"></i>
+              <p className="text-gray-500">الدرس غير موجود</p>
+              <button
+                onClick={() => setPage("courses")}
+                className="mt-4 px-6 py-2 bg-primary rounded-xl text-white"
+              >
+                العودة للدروس
+              </button>
+            </div>
+          );
+
+        const tabs = [
+          { id: "video", label: "شرح الدرس", icon: "fa-play-circle" },
+          { id: "images", label: "الصور", icon: "fa-images" },
+          { id: "activities", label: "أنشطة", icon: "fa-tasks" },
+          { id: "game", label: "العب", icon: "fa-gamepad" },
+          { id: "homework", label: "الواجب", icon: "fa-pen" },
+        ];
+
+        const handleHomeworkChange = (qIndex, value) => {
+          setHomeworkAnswers({ ...homeworkAnswers, [qIndex]: value });
+        };
+
+        const submitHomework = () => {
+          setShowAnswers(true);
+          setProgress(Math.min(progress + 25, 100));
+        };
+
+        const nextImage = () => {
+          setCurrentImage((prev) => (prev + 1) % lesson.images.length);
+        };
+
+        const prevImage = () => {
+          setCurrentImage(
+            (prev) => (prev - 1 + lesson.images.length) % lesson.images.length,
+          );
+        };
+
+        useEffect(() => {
+          setCurrentImage(0);
+        }, [lessonId]);
+
+        return (
+          <div className="pt-20 pb-20">
+            {/* Header */}
+            <div className="bg-gradient-to-r from-dark via-dark to-primary/10 border-b border-gray-800">
+              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                  <div>
+                    <div className="text-sm text-primary mb-2">
+                      {lesson.unit}
+                    </div>
+                    <h1 className="text-3xl md:text-4xl font-bold mb-2">
+                      {lesson.title}
+                    </h1>
+                    <p className="text-gray-400">{lesson.description}</p>
+                  </div>
+                  <div className="flex items-center gap-4">
+                    <div className="bg-dark border border-gray-700 rounded-2xl p-4 min-w-[200px]">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-sm text-gray-400">
+                          تقدم الدرس
+                        </span>
+                        <span className="text-sm font-bold gradient-text">
+                          {progress}%
+                        </span>
+                      </div>
+                      <div className="h-3 bg-gray-800 rounded-full overflow-hidden">
+                        <div
+                          className="h-full bg-gradient-to-r from-primary to-secondary rounded-full transition-all duration-500"
+                          style={{ width: `${progress}%` }}
+                        ></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Navigation Tabs */}
+            <div className="sticky top-16 z-40 bg-darker/95 backdrop-blur border-b border-gray-800">
+              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div className="flex overflow-x-auto scrollbar-hide gap-1">
+                  {tabs.map((tab) => (
+                    <button
+                      key={tab.id}
+                      onClick={() => setActiveTab(tab.id)}
+                      className={`flex items-center gap-2 px-6 py-4 whitespace-nowrap transition ${activeTab === tab.id ? "tab-active" : "text-gray-400 hover:text-white"}`}
+                    >
+                      <i className={`fas ${tab.icon}`}></i>
+                      <span>{tab.label}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Content */}
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+              {/* VIDEO TAB */}
+              {activeTab === "video" && (
+                <div className="space-y-8">
+                  <div className="bg-dark border border-gray-800 rounded-2xl overflow-hidden">
+                    <div className="video-container">
+                      <iframe
+                        src={lesson.videoUrl}
+                        title={lesson.title}
+                        frameBorder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                      ></iframe>
+                    </div>
+                  </div>
+
+                  <div className="grid md:grid-cols-3 gap-6">
+                    <div className="md:col-span-2">
+                      <h3 className="text-xl font-bold mb-4">أهداف الدرس</h3>
+                      <div className="bg-dark border border-gray-800 rounded-2xl p-6">
+                        <ul className="space-y-3">
+                          {lesson.objectives.map((obj, i) => (
+                            <li key={i} className="flex items-start gap-3">
+                              <div className="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+                                <i className="fas fa-check text-primary text-xs"></i>
+                              </div>
+                              <span className="text-gray-300">{obj}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-bold mb-4">معلومات الدرس</h3>
+                      <div className="bg-dark border border-gray-800 rounded-2xl p-6 space-y-4">
+                        <div className="flex items-center gap-3">
+                          <i className="fas fa-clock text-primary"></i>
+                          <div>
+                            <div className="text-sm text-gray-500">المدة</div>
+                            <div className="font-semibold">
+                              {lesson.duration}
+                            </div>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-3">
+                          <i className="fas fa-user text-primary"></i>
+                          <div>
+                            <div className="text-sm text-gray-500">المعلم</div>
+                            <div className="font-semibold">
+                              {lesson.instructor}
+                            </div>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-3">
+                          <i className="fas fa-tag text-primary"></i>
+                          <div>
+                            <div className="text-sm text-gray-500">النوع</div>
+                            <div className="font-semibold">{lesson.type}</div>
+                          </div>
+                        </div>
+                        <button
+                          onClick={() =>
+                            setProgress(Math.min(progress + 50, 100))
+                          }
+                          className="w-full py-3 bg-gradient-to-r from-primary to-secondary rounded-xl text-white font-bold hover:shadow-lg transition"
+                        >
+                          <i className="fas fa-check-circle mr-2"></i>
+                          أكملت مشاهدة الدرس
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* IMAGES TAB */}
+              {activeTab === "images" && (
+                <div className="space-y-6">
+                  <h3 className="text-2xl font-bold">صور توضيحية</h3>
+                  <div className="bg-dark border border-gray-800 rounded-2xl overflow-hidden">
+                    <div className="relative">
+                      <img
+                        src={lesson.images[currentImage].url}
+                        className="w-full h-[320px] md:h-[450px] object-cover"
+                        alt={lesson.images[currentImage].caption}
+                      />
+                      <button
+                        onClick={prevImage}
+                        className="absolute top-1/2 -translate-y-1/2 right-4 w-11 h-11 rounded-full bg-white/30 hover:bg-white/20 border border-white/10 flex items-center justify-center transition"
+                        aria-label="الصورة السابقة"
+                      >
+                        <i className="fas fa-chevron-right"></i>
+                      </button>
+                      <button
+                        onClick={nextImage}
+                        className="absolute top-1/2 -translate-y-1/2 left-4 w-11 h-11 rounded-full bg-white/30 hover:bg-white/20 border border-white/10 flex items-center justify-center transition"
+                        aria-label="الصورة التالية"
+                      >
+                        <i className="fas fa-chevron-left"></i>
+                      </button>
+                    </div>
+                    <div className="p-5">
+                      <p className="font-semibold text-center text-lg">
+                        {lesson.images[currentImage].caption}
+                      </p>
+                      <div className="flex justify-center items-center gap-2 mt-4">
+                        {lesson.images.map((_, i) => (
+                          <button
+                            key={i}
+                            onClick={() => setCurrentImage(i)}
+                            className={`w-2.5 h-2.5 rounded-full transition ${i === currentImage ? "bg-primary scale-125" : "bg-gray-500 hover:bg-primary/20"}`}
+                            aria-label={`عرض الصورة ${i + 1}`}
+                          ></button>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* ACTIVITIES TAB */}
+              {activeTab === "activities" && (
+                <div className="space-y-6">
+                  <h3 className="text-2xl font-bold">أنشطة تفاعلية</h3>
+                  <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {lesson.activities.map((act, i) => (
+                      <div
+                        key={i}
+                        className="bg-dark border border-gray-800 rounded-2xl p-6 card-hover"
+                      >
+                        <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center mb-4">
+                          <i className="fas fa-tasks text-white text-xl"></i>
+                        </div>
+                        <h4 className="font-bold text-lg mb-2">{act.title}</h4>
+                        <p className="text-gray-400 text-sm mb-4">{act.desc}</p>
+                        <button className="w-full py-2 border border-primary/30 text-primary rounded-xl hover:bg-primary/10 transition">
+                          بدء النشاط
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* GAME TAB */}
+              {activeTab === "game" && (
+                <div className="space-y-6">
+                  <h3 className="text-2xl font-bold">العب وتعلم</h3>
+                  <div className="bg-dark border border-gray-800 rounded-2xl overflow-hidden">
+                    <div
+                      className="video-container"
+                      style={{ paddingBottom: "75%" }}
+                    >
+                      <iframe
+                        src={lesson.gameUrl}
+                        title="لعبة تفاعلية"
+                        frameBorder="0"
+                        allow="fullscreen"
+                      ></iframe>
+                    </div>
+                  </div>
+                  <div className="text-center">
+                    <p className="text-gray-400 mb-4">
+                      العب اللعبة واختبر معلوماتك!
+                    </p>
+                    <button
+                      onClick={() => setProgress(Math.min(progress + 25, 100))}
+                      className="px-8 py-3 bg-gradient-to-r from-primary to-secondary rounded-xl text-white font-bold hover:shadow-lg transition"
+                    >
+                      <i className="fas fa-gamepad mr-2"></i>
+                      أكملت اللعبة
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* HOMEWORK TAB */}
+              {activeTab === "homework" && (
+                <div className="space-y-6">
+                  <h3 className="text-2xl font-bold">الواجب</h3>
+                  <div className="bg-dark border border-gray-800 rounded-2xl p-8">
+                    <div className="space-y-6">
+                      {lesson.homework.map((q, i) => (
+                        <div key={i} className="space-y-3 px-8">
+                          <div className="flex items-start gap-3">
+                            <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
+                              <span className="text-primary font-bold text-sm">
+                                {i + 1}
+                              </span>
+                            </div>
+                            <p className="font-semibold text-lg">
+                              {q.question}
+                            </p>
+                          </div>
+                          <textarea
+                            value={homeworkAnswers[i] || ""}
+                            onChange={(e) =>
+                              handleHomeworkChange(i, e.target.value)
+                            }
+                            rows="3"
+                            className="w-full px-4 py-3 bg-darker border border-gray-700 rounded-xl focus:border-primary focus:outline-none transition resize-none mr-11"
+                            placeholder="اكتب إجابتك هنا..."
+                          ></textarea>
+                          {showAnswers && (
+                            <div className="mr-11 p-4 bg-green-500/10 border border-green-500/30 rounded-xl">
+                              <div className="flex items-center gap-2 text-green-400 mb-2">
+                                <i className="fas fa-check-circle"></i>
+                                <span className="font-bold">إجابة نموذجية</span>
+                              </div>
+                              <p className="text-gray-300">
+                                {q.answer || "إجابة صحيحة: الله تعالى"}
+                              </p>
+                            </div>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                    <div className="mt-8 flex gap-4">
+                      <button
+                        onClick={submitHomework}
+                        className="px-8 py-3 bg-gradient-to-r from-primary to-secondary rounded-xl text-white font-bold hover:shadow-lg transition"
+                      >
+                        <i className="fas fa-paper-plane mr-2"></i>
+                        إرسال الواجب
+                      </button>
+                      {showAnswers && (
+                        <button
+                          onClick={() => setShowAnswers(false)}
+                          className="px-8 py-3 border border-gray-600 rounded-xl hover:bg-white/5 transition"
+                        >
+                          إخفاء الإجابات
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Next/Prev Navigation */}
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <div className="flex justify-between items-center bg-dark border border-gray-800 rounded-2xl p-6">
+                {lesson.id > 1 ? (
+                  <button
+                    onClick={() => {
+                      setLessonId(lesson.id - 1);
+                      window.scrollTo(0, 0);
+                    }}
+                    className="flex items-center gap-3 text-gray-400 hover:text-white transition"
+                  >
+                    <i className="fas fa-arrow-right"></i>
+                    <div className="text-right">
+                      <div className="text-sm">الدرس السابق</div>
+                      <div className="font-semibold">
+                        {lessonsData.find((l) => l.id === lesson.id - 1)?.title}
+                      </div>
+                    </div>
+                  </button>
+                ) : (
+                  <div></div>
+                )}
+
+                {lesson.id < lessonsData.length ? (
+                  <button
+                    onClick={() => {
+                      setLessonId(lesson.id + 1);
+                      window.scrollTo(0, 0);
+                    }}
+                    className="flex items-center gap-3 text-primary hover:text-secondary transition"
+                  >
+                    <div className="text-left">
+                      <div className="text-sm">الدرس التالي</div>
+                      <div className="font-semibold">
+                        {lessonsData.find((l) => l.id === lesson.id + 1)?.title}
+                      </div>
+                    </div>
+                    <i className="fas fa-arrow-left"></i>
+                  </button>
+                ) : (
+                  <div></div>
+                )}
+              </div>
+            </div>
+          </div>
+        );
+      };
+
+      const CategoriesSection = ({ setPage }) => (
+        <section className="py-20 bg-dark/50">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl font-bold mb-2">تصفح حسب القسم</h2>
+              <p className="text-gray-400">اختر المجال اللي تحب تتعلمه</p>
+            </div>
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {categories.map((cat, i) => (
+                <div
+                  key={i}
+                  onClick={() => setPage("courses")}
+                  className="card-hover group cursor-pointer bg-dark border border-gray-800 rounded-2xl p-6 flex items-center gap-4"
+                >
+                  <div
+                    className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${cat.color} flex items-center justify-center group-hover:scale-110 transition`}
+                  >
+                    <i className={`fas ${cat.icon} text-white text-2xl`}></i>
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-lg">{cat.name}</h3>
+                    <p className="text-gray-500 text-sm">{cat.count} درس</p>
+                  </div>
+                  <i className="fas fa-arrow-left mr-auto text-gray-600 group-hover:text-white transition"></i>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      );
+
+      const PricingSection = ({ setPage, user }) => (
+        <section className="py-20">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl font-bold mb-2">خطط الاشتراك</h2>
+              <p className="text-gray-400">
+                اختر الخطة المناسبة لأهدافك التعليمية
+              </p>
+            </div>
+            <div className="grid md:grid-cols-3 gap-8">
+              {plans.map((plan, i) => (
+                <div
+                  key={i}
+                  className={`relative rounded-2xl p-8 ${plan.popular ? "bg-gradient-to-b from-primary/20 to-secondary/20 border-2 border-primary" : "bg-dark border border-gray-800"}`}
+                >
+                  {plan.popular && (
+                    <div className="absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1 bg-gradient-to-r from-primary to-secondary rounded-full text-sm font-bold">
+                      الأكثر شيوعاً
+                    </div>
+                  )}
+                  <h3 className="text-xl font-bold mb-2">{plan.name}</h3>
+                  <div className="mb-6">
+                    <span className="text-4xl font-bold">${plan.price}</span>
+                    <span className="text-gray-500">/شهر</span>
+                  </div>
+                  <ul className="space-y-3 mb-8">
+                    {plan.features.map((f, j) => (
+                      <li key={j} className="flex items-center gap-2">
+                        <i className="fas fa-check text-green-400"></i>
+                        <span className="text-gray-300">{f}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  <button
+                    onClick={() => setPage(user ? "dashboard" : "login")}
+                    className={`w-full py-3 rounded-xl font-bold transition ${plan.popular ? "bg-gradient-to-r from-primary to-secondary text-white hover:shadow-lg hover:shadow-primary/30" : "border border-gray-600 hover:bg-white/5"}`}
+                  >
+                    ابدأ الآن
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      );
+
+      const AboutSection = () => (
+        <section className="py-20 bg-dark/50">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="grid lg:grid-cols-2 gap-12 items-center">
+              <div>
+                <img
+                  src="https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=600"
+                  className="rounded-3xl shadow-2xl border border-white/10"
+                />
+              </div>
+              <div>
+                <h2 className="text-3xl font-bold mb-6">عن منصة التعلم</h2>
+                <p className="text-gray-400 leading-relaxed mb-6">
+                  منصة التعلم هي وجهتك الأولى للتعلم الإلكتروني في الوطن العربي.
+                  نؤمن بأن التعليم حق للجميع، ونسعى لتوفير محتوى تعليمي عالي
+                  الجودة بأسعار مناسبة.
+                </p>
+                <div className="grid sm:grid-cols-2 gap-4">
+                  {[
+                    {
+                      icon: "fa-video",
+                      title: "محتوى تفاعلي",
+                      desc: "فيديوهات وتمارين عملية",
+                    },
+                    {
+                      icon: "fa-certificate",
+                      title: "شهادات معتمدة",
+                      desc: "اعتراف دولي بإنجازاتك",
+                    },
+                    {
+                      icon: "fa-users",
+                      title: "مجتمع نشط",
+                      desc: "تواصل مع زملائك",
+                    },
+                    {
+                      icon: "fa-headset",
+                      title: "دعم 24/7",
+                      desc: "فريق دعم متخصص",
+                    },
+                  ].map((item, i) => (
+                    <div key={i} className="flex items-start gap-3">
+                      <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
+                        <i className={`fas ${item.icon} text-primary`}></i>
+                      </div>
+                      <div>
+                        <h4 className="font-bold">{item.title}</h4>
+                        <p className="text-sm text-gray-500">{item.desc}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      );
+
+      const SupportSection = () => {
+        const [sent, setSent] = useState(false);
+        const handleSubmit = (e) => {
+          e.preventDefault();
+          setSent(true);
+          setTimeout(() => setSent(false), 3000);
+        };
+        return (
+          <section className="py-20">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <div className="grid lg:grid-cols-2 gap-12">
+                <div>
+                  <h2 className="text-3xl font-bold mb-6">تواصل معنا</h2>
+                  <p className="text-gray-400 mb-8">
+                    فريقنا جاهز لمساعدتك في أي استفسار.
+                  </p>
+                  <div className="space-y-4">
+                    {[
+                      {
+                        icon: "fa-envelope",
+                        title: "البريد الإلكتروني",
+                        value: "support@lms.com",
+                      },
+                      {
+                        icon: "fa-phone",
+                        title: "الهاتف",
+                        value: "+20 123 456 7890",
+                      },
+                      {
+                        icon: "fa-map-marker-alt",
+                        title: "العنوان",
+                        value: "القاهرة، مصر",
+                      },
+                    ].map((item, i) => (
+                      <div
+                        key={i}
+                        className="flex items-center gap-4 p-4 bg-dark border border-gray-800 rounded-xl"
+                      >
+                        <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
+                          <i className={`fas ${item.icon} text-primary`}></i>
+                        </div>
+                        <div>
+                          <div className="text-sm text-gray-500">
+                            {item.title}
+                          </div>
+                          <div className="font-semibold">{item.value}</div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                <div className="bg-dark border border-gray-800 rounded-2xl p-8">
+                  {sent ? (
+                    <div className="text-center py-12">
+                      <div className="w-20 h-20 rounded-full bg-green-500/20 flex items-center justify-center mx-auto mb-4">
+                        <i className="fas fa-check text-green-400 text-3xl"></i>
+                      </div>
+                      <h3 className="text-xl font-bold mb-2">
+                        تم الإرسال بنجاح!
+                      </h3>
+                    </div>
+                  ) : (
+                    <form onSubmit={handleSubmit}>
+                      <div className="space-y-4">
+                        <div>
+                          <label className="block text-sm font-medium mb-2">
+                            الاسم
+                          </label>
+                          <input
+                            type="text"
+                            required
+                            className="w-full px-4 py-3 bg-darker border border-gray-700 rounded-xl focus:border-primary focus:outline-none transition"
+                            placeholder="اسمك الكامل"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium mb-2">
+                            البريد الإلكتروني
+                          </label>
+                          <input
+                            type="email"
+                            required
+                            className="w-full px-4 py-3 bg-darker border border-gray-700 rounded-xl focus:border-primary focus:outline-none transition"
+                            placeholder="your@email.com"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium mb-2">
+                            الرسالة
+                          </label>
+                          <textarea
+                            required
+                            rows="4"
+                            className="w-full px-4 py-3 bg-darker border border-gray-700 rounded-xl focus:border-primary focus:outline-none transition resize-none"
+                            placeholder="اكتب رسالتك هنا..."
+                          ></textarea>
+                        </div>
+                        <button
+                          type="submit"
+                          className="w-full py-3 bg-gradient-to-r from-primary to-secondary rounded-xl text-white font-bold hover:shadow-lg transition"
+                        >
+                          إرسال الرسالة
+                        </button>
+                      </div>
+                    </form>
+                  )}
+                </div>
+              </div>
+            </div>
+          </section>
+        );
+      };
+
+      const Footer = ({ setPage }) => (
+        <footer className="bg-dark border-t border-gray-800 pt-16 pb-8">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="grid md:grid-cols-4 gap-8 mb-12">
+              <div>
+                <div className="flex items-center gap-2 mb-4">
+                  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center">
+                    <i className="fas fa-graduation-cap text-white"></i>
+                  </div>
+                  <span className="text-xl font-bold gradient-text">
+                    منصة التعلم
+                  </span>
+                </div>
+                <p className="text-gray-500 text-sm leading-relaxed">
+                  منصة تعليمية متكاملة تهدف لتمكين الجميع من التعلم والتطور.
+                </p>
+              </div>
+              <div>
+                <h4 className="font-bold mb-4">روابط سريعة</h4>
+                <ul className="space-y-2 text-gray-500">
+                  <li>
+                    <button
+                      onClick={() => setPage("courses")}
+                      className="hover:text-primary transition"
+                    >
+                      الدروس
+                    </button>
+                  </li>
+                  <li>
+                    <button
+                      onClick={() => setPage("categories")}
+                      className="hover:text-primary transition"
+                    >
+                      الأقسام
+                    </button>
+                  </li>
+                  <li>
+                    <button
+                      onClick={() => setPage("pricing")}
+                      className="hover:text-primary transition"
+                    >
+                      الاشتراكات
+                    </button>
+                  </li>
+                  <li>
+                    <button
+                      onClick={() => setPage("about")}
+                      className="hover:text-primary transition"
+                    >
+                      عن الموقع
+                    </button>
+                  </li>
+                </ul>
+              </div>
+              <div>
+                <h4 className="font-bold mb-4">المساعدة</h4>
+                <ul className="space-y-2 text-gray-500">
+                  <li>
+                    <button
+                      onClick={() => setPage("support")}
+                      className="hover:text-primary transition"
+                    >
+                      مركز المساعدة
+                    </button>
+                  </li>
+                  <li>
+                    <span className="hover:text-primary transition cursor-pointer">
+                      الأسئلة الشائعة
+                    </span>
+                  </li>
+                  <li>
+                    <span className="hover:text-primary transition cursor-pointer">
+                      سياسة الخصوصية
+                    </span>
+                  </li>
+                </ul>
+              </div>
+              <div>
+                <h4 className="font-bold mb-4">تابعنا</h4>
+                <div className="flex gap-3">
+                  {[
+                    "facebook",
+                    "twitter",
+                    "instagram",
+                    "linkedin",
+                    "youtube",
+                  ].map((social) => (
+                    <button
+                      key={social}
+                      className="w-10 h-10 rounded-lg bg-gray-800 hover:bg-primary/20 flex items-center justify-center transition"
+                    >
+                      <i
+                        className={`fab fa-${social} text-gray-400 hover:text-primary`}
+                      ></i>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+            <div className="border-t border-gray-800 pt-8 text-center text-gray-500 text-sm">
+              <p>© 2026 منصة التعلم. جميع الحقوق محفوظة.</p>
+            </div>
+          </div>
+        </footer>
+      );
+
+      // ==================== PAGES ====================
+
+      const LoginPage = ({ login }) => {
+        const [mode, setMode] = useState("login");
+        const [email, setEmail] = useState("");
+        const [password, setPassword] = useState("");
+        const [name, setName] = useState("");
+
+        const handleSubmit = (e) => {
+          e.preventDefault();
+          login({
+            name: name || "مستخدم",
+            email,
+            role: email.includes("admin") ? "admin" : "user",
+          });
+        };
+
+        return (
+          <div className="min-h-screen flex items-center justify-center pt-16">
+            <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=1920')] bg-cover bg-center opacity-5"></div>
+            <div className="absolute top-20 left-1/4 w-96 h-96 bg-primary/10 rounded-full blur-3xl"></div>
+            <div className="absolute bottom-20 right-1/4 w-96 h-96 bg-secondary/10 rounded-full blur-3xl"></div>
+
+            <div className="relative w-full max-w-md mx-4">
+              <div className="bg-dark border border-gray-800 rounded-3xl p-8 shadow-2xl">
+                <div className="text-center mb-8">
+                  <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center mx-auto mb-4">
+                    <i className="fas fa-graduation-cap text-white text-2xl"></i>
+                  </div>
+                  <h2 className="text-2xl font-bold">
+                    {mode === "login" ? "تسجيل الدخول" : "إنشاء حساب"}
+                  </h2>
+                  <p className="text-gray-500 mt-2">
+                    {mode === "login" ? "أهلاً بعودتك!" : "انضم إلى مجتمعنا"}
+                  </p>
+                </div>
+
+                <form onSubmit={handleSubmit} className="space-y-4">
+                  {mode === "register" && (
+                    <div>
+                      <label className="block text-sm font-medium mb-2">
+                        الاسم الكامل
+                      </label>
+                      <input
+                        type="text"
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        required
+                        className="w-full px-4 py-3 bg-darker border border-gray-700 rounded-xl focus:border-primary focus:outline-none transition"
+                        placeholder="محمد أحمد"
+                      />
+                    </div>
+                  )}
+                  <div>
+                    <label className="block text-sm font-medium mb-2">
+                      البريد الإلكتروني
+                    </label>
+                    <input
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      required
+                      className="w-full px-4 py-3 bg-darker border border-gray-700 rounded-xl focus:border-primary focus:outline-none transition"
+                      placeholder="your@email.com"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-2">
+                      كلمة المرور
+                    </label>
+                    <input
+                      type="password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      required
+                      className="w-full px-4 py-3 bg-darker border border-gray-700 rounded-xl focus:border-primary focus:outline-none transition"
+                      placeholder="••••••••"
+                    />
+                  </div>
+
+                  {mode === "login" && (
+                    <div className="flex items-center justify-between text-sm">
+                      <label className="flex items-center gap-2 cursor-pointer">
+                        <input
+                          type="checkbox"
+                          className="rounded border-gray-700 bg-darker"
+                        />
+                        <span className="text-gray-500">تذكرني</span>
+                      </label>
+                      <button
+                        type="button"
+                        className="text-primary hover:text-secondary transition"
+                      >
+                        نسيت كلمة المرور؟
+                      </button>
+                    </div>
+                  )}
+
+                  <button
+                    type="submit"
+                    className="w-full py-3 bg-gradient-to-r from-primary to-secondary rounded-xl text-white font-bold hover:shadow-lg hover:shadow-primary/30 transition"
+                  >
+                    {mode === "login" ? "تسجيل الدخول" : "إنشاء حساب"}
+                  </button>
+                </form>
+
+                <div className="mt-6 text-center">
+                  <p className="text-gray-500 text-sm">
+                    {mode === "login"
+                      ? "ليس لديك حساب؟ "
+                      : "لديك حساب بالفعل؟ "}
+                    <button
+                      onClick={() =>
+                        setMode(mode === "login" ? "register" : "login")
+                      }
+                      className="text-primary hover:text-secondary transition font-semibold"
+                    >
+                      {mode === "login" ? "سجل الآن" : "سجل دخول"}
+                    </button>
+                  </p>
+                </div>
+
+                <div className="mt-6">
+                  <div className="relative">
+                    <div className="absolute inset-0 flex items-center">
+                      <div className="w-full border-t border-gray-800"></div>
+                    </div>
+                    <div className="relative flex justify-center text-sm">
+                      <span className="px-4 bg-dark text-gray-500">أو</span>
+                    </div>
+                  </div>
+                  <div className="mt-4 grid grid-cols-2 gap-3">
+                    <button className="flex items-center justify-center gap-2 py-2.5 border border-gray-700 rounded-xl hover:bg-white/5 transition">
+                      <i className="fab fa-google text-red-400"></i>
+                      <span className="text-sm">Google</span>
+                    </button>
+                    <button className="flex items-center justify-center gap-2 py-2.5 border border-gray-700 rounded-xl hover:bg-white/5 transition">
+                      <i className="fab fa-facebook text-blue-400"></i>
+                      <span className="text-sm">Facebook</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+      };
+
+      const CoursesPage = ({ setPage, setLessonId }) => {
+        const [filter, setFilter] = useState("all");
+        const [search, setSearch] = useState("");
+        const filtered = lessonsData.filter((c) => {
+          const matchFilter = filter === "all" || c.type === filter;
+          const matchSearch = c.title
+            .toLowerCase()
+            .includes(search.toLowerCase());
+          return matchFilter && matchSearch;
+        });
+
+        return (
+          <div className="pt-24 pb-20">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <div className="text-center mb-12">
+                <h2 className="text-3xl font-bold mb-2">
+                  مقرر الدراسات الإسلامية
+                </h2>
+                <p className="text-gray-400">الوحدة الدراسية الأولى</p>
+              </div>
+
+              <div className="flex flex-col sm:flex-row gap-4 mb-8">
+                <div className="relative flex-1">
+                  <i className="fas fa-search absolute right-4 top-1/2 -translate-y-1/2 text-gray-500"></i>
+                  <input
+                    type="text"
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                    placeholder="الدرس ال..."
+                    className="w-full pr-12 pl-4 py-3 bg-dark border border-gray-800 rounded-xl focus:border-primary focus:outline-none transition"
+                  />
+                </div>
+                <div className="flex gap-2 overflow-x-auto scrollbar-hide">
+                  {["all", "مجاني", "مدفوع"].map((f) => (
+                    <button
+                      key={f}
+                      onClick={() => setFilter(f)}
+                      className={`px-4 py-2 rounded-xl whitespace-nowrap transition ${filter === f ? "bg-primary text-white" : "bg-dark border border-gray-800 text-gray-400 hover:text-white"}`}
+                    >
+                      {f === "all" ? "الكل" : f}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="grid lg:grid-cols-12 gap-6 items-start">
+                <aside className="lg:col-span-4 bg-dark border border-gray-800 rounded-2xl p-6 lg:sticky lg:top-24">
+                  <h3 className="text-2xl font-bold mb-5">أهداف الوحدة</h3>
+                  <ul className="space-y-4 text-gray-300 leading-relaxed">
+                    <li>
+                      أن يوضح المتعلم أن الله تعالى هو الخالق الرازق المدبر لكل
+                      شيء في الكون.
+                    </li>
+                    <li>
+                      أن يميز المتعلم بين المخلوقات التي خلقها الله تعالى من
+                      خلال الأمثلة والصور والأنشطة التعليمية.
+                    </li>
+                    <li>
+                      أن يتعرف المتعلم على القرآن الكريم بوصفه كلام الله تعالى
+                      المنزل على نبينا محمد ﷺ.
+                    </li>
+                    <li>
+                      أن يطبق المتعلم آداب التعامل مع القرآن الكريم في المواقف
+                      التعليمية والحياتية اليومية.
+                    </li>
+                    <li>
+                      أن يُظهر المتعلم سلوكًا يعكس تعظيم نعم الله تعالى واحترام
+                      القرآن الكريم أثناء الأنشطة الصفية والتفاعلية.
+                    </li>
+                  </ul>
+                </aside>
+
+                <div className="lg:col-span-8 grid sm:grid-cols-2 gap-6">
+                  {filtered.map((course) => (
+                    <CourseCard
+                      key={course.id}
+                      course={course}
+                      onClick={() => {
+                        setLessonId(course.id);
+                        setPage("lesson");
+                      }}
+                    />
+                  ))}
+                </div>
+              </div>
+
+              {filtered.length === 0 && (
+                <div className="text-center py-20">
+                  <i className="fas fa-search text-4xl text-gray-600 mb-4"></i>
+                  <p className="text-gray-500">لا توجد نتائج مطابقة للبحث</p>
+                </div>
+              )}
+            </div>
+          </div>
+        );
+      };
+
+      const DashboardPage = ({ user }) => {
+        const [tab, setTab] = useState("courses");
+        const myCourses = lessonsData.slice(0, 3);
+        const progress = [75, 45, 30];
+
+        return (
+          <div className="pt-24 pb-20">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <div className="grid lg:grid-cols-4 gap-8">
+                <div className="lg:col-span-1">
+                  <div className="bg-dark border border-gray-800 rounded-2xl p-6 sticky top-24">
+                    <div className="text-center mb-6">
+                      <img
+                        src={`https://ui-avatars.com/api/?name=${user?.name || "User"}&background=6366f1&color=fff&size=80`}
+                        className="w-20 h-20 rounded-full mx-auto mb-3"
+                      />
+                      <h3 className="font-bold text-lg">
+                        {user?.name || "مستخدم"}
+                      </h3>
+                      <p className="text-sm text-gray-500">
+                        {user?.email || "user@email.com"}
+                      </p>
+                    </div>
+                    <div className="space-y-2">
+                      {[
+                        { id: "courses", icon: "fa-book", label: "دروسي" },
+                        {
+                          id: "notifications",
+                          icon: "fa-bell",
+                          label: "الإشعارات",
+                        },
+                        { id: "reviews", icon: "fa-star", label: "تقييماتي" },
+                        { id: "settings", icon: "fa-cog", label: "الإعدادات" },
+                      ].map((item) => (
+                        <button
+                          key={item.id}
+                          onClick={() => setTab(item.id)}
+                          className={`w-full text-right px-4 py-3 rounded-xl flex items-center gap-3 transition ${tab === item.id ? "bg-primary/10 text-primary" : "text-gray-400 hover:bg-gray-800"}`}
+                        >
+                          <i className={`fas ${item.icon}`}></i>
+                          <span>{item.label}</span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="lg:col-span-3">
+                  {tab === "courses" && (
+                    <div>
+                      <h2 className="text-2xl font-bold mb-6">دروسي</h2>
+                      <div className="space-y-4">
+                        {myCourses.map((course, i) => (
+                          <div
+                            key={course.id}
+                            className="bg-dark border border-gray-800 rounded-2xl p-4 flex flex-col sm:flex-row gap-4"
+                          >
+                            <img
+                              src={course.videoThumbnail}
+                              className="w-full sm:w-32 h-24 object-cover rounded-xl"
+                            />
+                            <div className="flex-1">
+                              <h3 className="font-bold mb-1">{course.title}</h3>
+                              <p className="text-sm text-gray-500 mb-3">
+                                {course.instructor}
+                              </p>
+                              <div className="flex items-center gap-3">
+                                <div className="flex-1 h-2 bg-gray-800 rounded-full overflow-hidden">
+                                  <div
+                                    className="h-full bg-gradient-to-r from-primary to-secondary rounded-full"
+                                    style={{ width: `${progress[i]}%` }}
+                                  ></div>
+                                </div>
+                                <span className="text-sm font-bold">
+                                  {progress[i]}%
+                                </span>
+                              </div>
+                            </div>
+                            <button className="px-4 py-2 bg-primary/10 text-primary rounded-xl hover:bg-primary/20 transition self-start sm:self-center">
+                              استمر
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {tab === "notifications" && (
+                    <div>
+                      <h2 className="text-2xl font-bold mb-6">الإشعارات</h2>
+                      <div className="space-y-3">
+                        {notifications.map((n) => (
+                          <div
+                            key={n.id}
+                            className="bg-dark border border-gray-800 rounded-xl p-4 flex items-start gap-3"
+                          >
+                            <div
+                              className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${n.type === "course" ? "bg-blue-500/20 text-blue-400" : n.type === "progress" ? "bg-green-500/20 text-green-400" : "bg-purple-500/20 text-purple-400"}`}
+                            >
+                              <i
+                                className={`fas ${n.type === "course" ? "fa-book" : n.type === "progress" ? "fa-chart-line" : "fa-envelope"}`}
+                              ></i>
+                            </div>
+                            <div>
+                              <p>{n.text}</p>
+                              <p className="text-sm text-gray-500">{n.time}</p>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {tab === "reviews" && (
+                    <div>
+                      <h2 className="text-2xl font-bold mb-6">تقييماتي</h2>
+                      <div className="space-y-4">
+                        {myCourses.slice(0, 2).map((course, i) => (
+                          <div
+                            key={course.id}
+                            className="bg-dark border border-gray-800 rounded-2xl p-6"
+                          >
+                            <div className="flex items-start justify-between mb-4">
+                              <div className="flex items-center gap-3">
+                                <img
+                                  src={course.videoThumbnail}
+                                  className="w-12 h-12 rounded-xl object-cover"
+                                />
+                                <div>
+                                  <h4 className="font-bold">{course.title}</h4>
+                                  <p className="text-sm text-gray-500">
+                                    {course.instructor}
+                                  </p>
+                                </div>
+                              </div>
+                              <div className="flex gap-1">
+                                {[1, 2, 3, 4, 5].map((s) => (
+                                  <i
+                                    key={s}
+                                    className={`fas fa-star ${s <= 4 + i ? "text-yellow-400" : "text-gray-600"}`}
+                                  ></i>
+                                ))}
+                              </div>
+                            </div>
+                            <p className="text-gray-400">
+                              درس رائع ومفيد جداً! المعلم ممتاز والمحتوى عملي.
+                            </p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {tab === "settings" && (
+                    <div>
+                      <h2 className="text-2xl font-bold mb-6">الإعدادات</h2>
+                      <div className="bg-dark border border-gray-800 rounded-2xl p-6 space-y-6">
+                        <div>
+                          <h3 className="font-bold mb-4">المعلومات الشخصية</h3>
+                          <div className="grid sm:grid-cols-2 gap-4">
+                            <div>
+                              <label className="block text-sm text-gray-500 mb-2">
+                                الاسم
+                              </label>
+                              <input
+                                type="text"
+                                defaultValue={user?.name || "مستخدم"}
+                                className="w-full px-4 py-3 bg-darker border border-gray-700 rounded-xl focus:border-primary focus:outline-none"
+                              />
+                            </div>
+                            <div>
+                              <label className="block text-sm text-gray-500 mb-2">
+                                البريد الإلكتروني
+                              </label>
+                              <input
+                                type="email"
+                                defaultValue={user?.email || "user@email.com"}
+                                className="w-full px-4 py-3 bg-darker border border-gray-700 rounded-xl focus:border-primary focus:outline-none"
+                              />
+                            </div>
+                          </div>
+                        </div>
+                        <div>
+                          <h3 className="font-bold mb-4">تفضيلات</h3>
+                          <div className="space-y-3">
+                            <label className="flex items-center gap-3 cursor-pointer">
+                              <input
+                                type="checkbox"
+                                defaultChecked
+                                className="rounded border-gray-700 bg-darker"
+                              />
+                              <span>إشعارات البريد الإلكتروني</span>
+                            </label>
+                            <label className="flex items-center gap-3 cursor-pointer">
+                              <input
+                                type="checkbox"
+                                defaultChecked
+                                className="rounded border-gray-700 bg-darker"
+                              />
+                              <span>إشعارات الدروس الجديدة</span>
+                            </label>
+                            <label className="flex items-center gap-3 cursor-pointer">
+                              <input
+                                type="checkbox"
+                                className="rounded border-gray-700 bg-darker"
+                              />
+                              <span>وضع الخصوصية العالي</span>
+                            </label>
+                          </div>
+                        </div>
+                        <button className="px-6 py-3 bg-gradient-to-r from-primary to-secondary rounded-xl text-white font-bold hover:shadow-lg transition">
+                          حفظ التغييرات
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+      };
+
+      const AdminPage = ({ user }) => {
+        const [tab, setTab] = useState("courses");
+        const stats = [
+          {
+            label: "إجمالي الدروس",
+            value: "500+",
+            icon: "fa-book",
+            color: "primary",
+          },
+          {
+            label: "المستخدمين",
+            value: "10,240",
+            icon: "fa-users",
+            color: "secondary",
+          },
+          {
+            label: "الإيرادات",
+            value: "$45,200",
+            icon: "fa-dollar-sign",
+            color: "green",
+          },
+          {
+            label: "التقييمات",
+            value: "3,420",
+            icon: "fa-star",
+            color: "yellow",
+          },
+        ];
+
+        return (
+          <div className="pt-24 pb-20">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <div className="grid lg:grid-cols-4 gap-8">
+                <div className="lg:col-span-1">
+                  <div className="bg-dark border border-gray-800 rounded-2xl p-6 sticky top-24">
+                    <div className="text-center mb-6">
+                      <div className="w-16 h-16 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center mx-auto mb-3">
+                        <i className="fas fa-shield-alt text-white text-2xl"></i>
+                      </div>
+                      <h3 className="font-bold text-lg">لوحة الأدمن</h3>
+                      <p className="text-sm text-gray-500">
+                        {user?.email || "admin@lms.com"}
+                      </p>
+                    </div>
+                    <div className="space-y-2">
+                      {[
+                        {
+                          id: "courses",
+                          icon: "fa-book",
+                          label: "إدارة الدروس",
+                        },
+                        { id: "users", icon: "fa-users", label: "المستخدمين" },
+                        {
+                          id: "reports",
+                          icon: "fa-chart-bar",
+                          label: "التقارير",
+                        },
+                        {
+                          id: "notifications",
+                          icon: "fa-bell",
+                          label: "إدارة الإشعارات",
+                        },
+                      ].map((item) => (
+                        <button
+                          key={item.id}
+                          onClick={() => setTab(item.id)}
+                          className={`w-full text-right px-4 py-3 rounded-xl flex items-center gap-3 transition ${tab === item.id ? "bg-primary/10 text-primary" : "text-gray-400 hover:bg-gray-800"}`}
+                        >
+                          <i className={`fas ${item.icon}`}></i>
+                          <span>{item.label}</span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="lg:col-span-3">
+                  <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+                    {stats.map((stat, i) => (
+                      <div
+                        key={i}
+                        className="bg-dark border border-gray-800 rounded-2xl p-6"
+                      >
+                        <div className="flex items-center justify-between mb-4">
+                          <div
+                            className={`w-12 h-12 rounded-xl bg-${stat.color}-500/20 flex items-center justify-center`}
+                          >
+                            <i
+                              className={`fas ${stat.icon} text-${stat.color}-400`}
+                            ></i>
+                          </div>
+                          <span className="text-xs text-gray-500 bg-gray-800 px-2 py-1 rounded">
+                            +12%
+                          </span>
+                        </div>
+                        <div className="text-2xl font-bold">{stat.value}</div>
+                        <div className="text-sm text-gray-500">
+                          {stat.label}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  {tab === "courses" && (
+                    <div>
+                      <div className="flex items-center justify-between mb-6">
+                        <h2 className="text-2xl font-bold">إدارة الدروس</h2>
+                        <button className="px-4 py-2 bg-gradient-to-r from-primary to-secondary rounded-xl text-white font-semibold hover:shadow-lg transition flex items-center gap-2">
+                          <i className="fas fa-plus"></i> إضافة درس
+                        </button>
+                      </div>
+                      <div className="bg-dark border border-gray-800 rounded-2xl overflow-hidden">
+                        <div className="overflow-x-auto">
+                          <table className="w-full">
+                            <thead className="bg-gray-800/50">
+                              <tr>
+                                <th className="px-6 py-4 text-right">الدرس</th>
+                                <th className="px-6 py-4 text-right">المعلم</th>
+                                <th className="px-6 py-4 text-right">السعر</th>
+                                <th className="px-6 py-4 text-right">الطلاب</th>
+                                <th className="px-6 py-4 text-right">الحالة</th>
+                                <th className="px-6 py-4 text-right">
+                                  إجراءات
+                                </th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {lessonsData.map((course) => (
+                                <tr
+                                  key={course.id}
+                                  className="border-t border-gray-800 hover:bg-gray-800/30 transition"
+                                >
+                                  <td className="px-6 py-4">
+                                    <div className="flex items-center gap-3">
+                                      <img
+                                        src={course.videoThumbnail}
+                                        className="w-10 h-10 rounded-lg object-cover"
+                                      />
+                                      <span className="font-semibold">
+                                        {course.title}
+                                      </span>
+                                    </div>
+                                  </td>
+                                  <td className="px-6 py-4 text-gray-400">
+                                    {course.instructor}
+                                  </td>
+                                  <td className="px-6 py-4">
+                                    {course.price === 0
+                                      ? "مجاني"
+                                      : `$${course.price}`}
+                                  </td>
+                                  <td className="px-6 py-4">
+                                    {course.students || 0}
+                                  </td>
+                                  <td className="px-6 py-4">
+                                    <span className="px-3 py-1 bg-green-500/20 text-green-400 rounded-full text-xs">
+                                      نشط
+                                    </span>
+                                  </td>
+                                  <td className="px-6 py-4">
+                                    <div className="flex gap-2">
+                                      <button className="p-2 bg-blue-500/10 text-blue-400 rounded-lg hover:bg-blue-500/20 transition">
+                                        <i className="fas fa-edit"></i>
+                                      </button>
+                                      <button className="p-2 bg-red-500/10 text-red-400 rounded-lg hover:bg-red-500/20 transition">
+                                        <i className="fas fa-trash"></i>
+                                      </button>
+                                    </div>
+                                  </td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {tab === "users" && (
+                    <div>
+                      <h2 className="text-2xl font-bold mb-6">المستخدمين</h2>
+                      <div className="bg-dark border border-gray-800 rounded-2xl overflow-hidden">
+                        <div className="overflow-x-auto">
+                          <table className="w-full">
+                            <thead className="bg-gray-800/50">
+                              <tr>
+                                <th className="px-6 py-4 text-right">
+                                  المستخدم
+                                </th>
+                                <th className="px-6 py-4 text-right">البريد</th>
+                                <th className="px-6 py-4 text-right">الدور</th>
+                                <th className="px-6 py-4 text-right">
+                                  تاريخ التسجيل
+                                </th>
+                                <th className="px-6 py-4 text-right">
+                                  إجراءات
+                                </th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {[
+                                {
+                                  name: "أحمد محمد",
+                                  email: "ahmed@email.com",
+                                  role: "طالب",
+                                  date: "2026-05-10",
+                                },
+                                {
+                                  name: "سارة أحمد",
+                                  email: "sara@email.com",
+                                  role: "معلم",
+                                  date: "2026-04-15",
+                                },
+                                {
+                                  name: "خالد سامي",
+                                  email: "khaled@email.com",
+                                  role: "طالب",
+                                  date: "2026-05-01",
+                                },
+                                {
+                                  name: "د. ليلى",
+                                  email: "laila@email.com",
+                                  role: "معلم",
+                                  date: "2026-03-20",
+                                },
+                              ].map((u, i) => (
+                                <tr
+                                  key={i}
+                                  className="border-t border-gray-800 hover:bg-gray-800/30 transition"
+                                >
+                                  <td className="px-6 py-4">
+                                    <div className="flex items-center gap-3">
+                                      <img
+                                        src={`https://ui-avatars.com/api/?name=${u.name}&background=random`}
+                                        className="w-10 h-10 rounded-full"
+                                      />
+                                      <span className="font-semibold">
+                                        {u.name}
+                                      </span>
+                                    </div>
+                                  </td>
+                                  <td className="px-6 py-4 text-gray-400">
+                                    {u.email}
+                                  </td>
+                                  <td className="px-6 py-4">
+                                    <span
+                                      className={`px-3 py-1 rounded-full text-xs ${u.role === "معلم" ? "bg-purple-500/20 text-purple-400" : "bg-blue-500/20 text-blue-400"}`}
+                                    >
+                                      {u.role}
+                                    </span>
+                                  </td>
+                                  <td className="px-6 py-4 text-gray-400">
+                                    {u.date}
+                                  </td>
+                                  <td className="px-6 py-4">
+                                    <div className="flex gap-2">
+                                      <button className="p-2 bg-blue-500/10 text-blue-400 rounded-lg hover:bg-blue-500/20 transition">
+                                        <i className="fas fa-edit"></i>
+                                      </button>
+                                      <button className="p-2 bg-red-500/10 text-red-400 rounded-lg hover:bg-red-500/20 transition">
+                                        <i className="fas fa-ban"></i>
+                                      </button>
+                                    </div>
+                                  </td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {tab === "reports" && (
+                    <div>
+                      <h2 className="text-2xl font-bold mb-6">التقارير</h2>
+                      <div className="grid md:grid-cols-2 gap-6">
+                        <div className="bg-dark border border-gray-800 rounded-2xl p-6">
+                          <h3 className="font-bold mb-4">الإيرادات الشهرية</h3>
+                          <div className="space-y-3">
+                            {["يناير", "فبراير", "مارس", "أبريل", "مايو"].map(
+                              (m, i) => (
+                                <div key={i}>
+                                  <div className="flex justify-between text-sm mb-1">
+                                    <span>{m}</span>
+                                    <span>${(i + 1) * 8500}</span>
+                                  </div>
+                                  <div className="h-2 bg-gray-800 rounded-full overflow-hidden">
+                                    <div
+                                      className="h-full bg-gradient-to-r from-primary to-secondary rounded-full"
+                                      style={{ width: `${(i + 1) * 20}%` }}
+                                    ></div>
+                                  </div>
+                                </div>
+                              ),
+                            )}
+                          </div>
+                        </div>
+                        <div className="bg-dark border border-gray-800 rounded-2xl p-6">
+                          <h3 className="font-bold mb-4">
+                            الدروس الأكثر شعبية
+                          </h3>
+                          <div className="space-y-4">
+                            {lessonsData.slice(0, 4).map((c, i) => (
+                              <div key={i} className="flex items-center gap-3">
+                                <span className="text-lg font-bold text-primary">
+                                  #{i + 1}
+                                </span>
+                                <img
+                                  src={c.videoThumbnail}
+                                  className="w-10 h-10 rounded-lg object-cover"
+                                />
+                                <div className="flex-1">
+                                  <div className="font-semibold text-sm">
+                                    {c.title}
+                                  </div>
+                                  <div className="text-xs text-gray-500">
+                                    {c.students || 0} طالب
+                                  </div>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {tab === "notifications" && (
+                    <div>
+                      <h2 className="text-2xl font-bold mb-6">
+                        إدارة الإشعارات
+                      </h2>
+                      <div className="bg-dark border border-gray-800 rounded-2xl p-6">
+                        <div className="flex items-center justify-between mb-6">
+                          <p className="text-gray-400">
+                            إرسال إشعار جديد لجميع المستخدمين
+                          </p>
+                          <button className="px-4 py-2 bg-gradient-to-r from-primary to-secondary rounded-xl text-white font-semibold hover:shadow-lg transition">
+                            إرسال إشعار
+                          </button>
+                        </div>
+                        <textarea
+                          className="w-full px-4 py-3 bg-darker border border-gray-700 rounded-xl focus:border-primary focus:outline-none transition resize-none"
+                          rows="4"
+                          placeholder="اكتب نص الإشعار هنا..."
+                        ></textarea>
+                        <div className="mt-6">
+                          <h4 className="font-bold mb-3">الإشعارات الأخيرة</h4>
+                          <div className="space-y-3">
+                            {notifications.map((n) => (
+                              <div
+                                key={n.id}
+                                className="flex items-center justify-between p-3 bg-gray-800/50 rounded-lg"
+                              >
+                                <span>{n.text}</span>
+                                <span className="text-sm text-gray-500">
+                                  {n.time}
+                                </span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+      };
+
+      // ==================== APP ====================
+
+      const App = () => {
+        const [page, setPage] = useState("home");
+        const [user, setUser] = useState(null);
+        const [lessonId, setLessonId] = useState(null);
+
+        const login = (userData) => {
+          setUser(userData);
+          setPage("dashboard");
+        };
+
+        const logout = () => {
+          setUser(null);
+          setPage("home");
+        };
+
+        const renderPage = () => {
+          switch (page) {
+            case "home":
+              return (
+                <>
+                  <Hero setPage={setPage} />
+                  <LatestCourses setPage={setPage} setLessonId={setLessonId} />
+                  <CategoriesSection setPage={setPage} />
+                  <PricingSection setPage={setPage} user={user} />
+                  <AboutSection />
+                  <SupportSection />
+                </>
+              );
+            case "courses":
+              return (
+                <CoursesPage setPage={setPage} setLessonId={setLessonId} />
+              );
+            case "lesson":
+              return <LessonDetail lessonId={lessonId} setPage={setPage} />;
+            case "categories":
+              return (
+                <div className="pt-24 pb-20">
+                  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="text-center mb-12">
+                      <h2 className="text-3xl font-bold mb-2">الأقسام</h2>
+                      <p className="text-gray-400">
+                        اختر المجال اللي تحب تتعلمه
+                      </p>
+                    </div>
+                    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                      {categories.map((cat, i) => (
+                        <div
+                          key={i}
+                          onClick={() => setPage("courses")}
+                          className="card-hover group cursor-pointer bg-dark border border-gray-800 rounded-2xl p-8 text-center"
+                        >
+                          <div
+                            className={`w-20 h-20 rounded-2xl bg-gradient-to-br ${cat.color} flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition`}
+                          >
+                            <i
+                              className={`fas ${cat.icon} text-white text-3xl`}
+                            ></i>
+                          </div>
+                          <h3 className="font-bold text-xl mb-2">{cat.name}</h3>
+                          <p className="text-gray-500">{cat.count} درس متاح</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              );
+            case "pricing":
+              return (
+                <div className="pt-24 pb-20">
+                  <PricingSection setPage={setPage} user={user} />
+                </div>
+              );
+            case "about":
+              return (
+                <div className="pt-24 pb-20">
+                  <AboutSection />
+                </div>
+              );
+            case "support":
+              return (
+                <div className="pt-24 pb-20">
+                  <SupportSection />
+                </div>
+              );
+            case "login":
+              return <LoginPage login={login} />;
+            case "dashboard":
+              return user ? (
+                <DashboardPage user={user} />
+              ) : (
+                <LoginPage login={login} />
+              );
+            case "admin":
+              return user && user.role === "admin" ? (
+                <AdminPage user={user} />
+              ) : (
+                <LoginPage login={login} />
+              );
+            default:
+              return (
+                <>
+                  <Hero setPage={setPage} />
+                  <LatestCourses setPage={setPage} setLessonId={setLessonId} />
+                  <CategoriesSection setPage={setPage} />
+                  <PricingSection setPage={setPage} user={user} />
+                  <AboutSection />
+                  <SupportSection />
+                </>
+              );
+          }
+        };
+
+        return (
+          <div className="min-h-screen bg-darker">
+            <Navbar
+              user={user}
+              setPage={setPage}
+              logout={logout}
+              setLessonId={setLessonId}
+            />
+            <main>{renderPage()}</main>
+            <Footer setPage={setPage} />
+          </div>
+        );
+      };
+
+      const root = ReactDOM.createRoot(document.getElementById("root"));
+      root.render(<App />);
+    </script>
+  </body>
+</html>
